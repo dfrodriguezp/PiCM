@@ -43,7 +43,7 @@ def main():
             Efield.close()
 
 
-    positions, velocities = numpy.loadtxt("test.txt", unpack=True)
+    positions, velocities = numpy.loadtxt("test/test.txt", unpack=True)
     
     pos = [p.pos for p in particles]
     assert(numpy.allclose(pos, positions))
