@@ -1,0 +1,220 @@
+         298263969 function calls (258123169 primitive calls) in 106.490 seconds
+
+   Ordered by: file name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/core/function_base.py:25(linspace)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/core/function_base.py:13(_index_deprecate)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/core/numeric.py:1917(isscalar)
+        4    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/core/numeric.py:495(asanyarray)
+     2100    0.003    0.000    0.004    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/core/numeric.py:424(asarray)
+     1400    0.001    0.000    0.001    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/fftpack.py:95(_unitary)
+      700    0.005    0.000    0.079    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/fftpack.py:102(fft)
+     1400    0.005    0.000    0.034    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/fftpack.py:47(_raw_fft)
+      700    0.007    0.000    0.020    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/fftpack.py:198(ifft)
+     1400    0.006    0.000    0.008    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/helper.py:283(pop_twiddle_factors)
+     1400    0.006    0.000    0.008    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/helper.py:257(put_twiddle_factors)
+     1400    0.001    0.000    0.001    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/fft/helper.py:311(_prune_cache)
+      700    0.001    0.000    0.001    0.000 /home/daniel/.local/lib/python3.5/site-packages/numpy/lib/type_check.py:106(real)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_monitor.py:48(exit)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_monitor.py:95(report)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_monitor.py:31(__init__)
+        1    0.000    0.000    0.023    0.023 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:638(__init__)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:878(__del__)
+      705    0.001    0.000    0.007    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:105(__enter__)
+      705    0.002    0.000    0.005    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:97(acquire)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:427(<genexpr>)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:890(_comparable)
+      705    0.001    0.000    0.003    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:108(__exit__)
+      701    0.002    0.000    0.019    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:190(print_status)
+      701    0.012    0.000    0.029    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:197(format_meter)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:401(__new__)
+      701    0.004    0.000    0.033    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:881(__repr__)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:431(_decr_instances)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:174(status_printer)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:1072(close)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:1091(fp_write)
+      705    0.002    0.000    0.003    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:101(release)
+      701    0.002    0.000    0.016    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:184(fp_write)
+      701    0.013    0.000    0.076    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:897(__iter__)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:424(_get_free_pos)
+     1401    0.004    0.000    0.010    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:153(format_interval)
+        2    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:894(__hash__)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_tqdm.py:1112(<listcomp>)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_utils.py:156(_supports_unicode)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_utils.py:163(_environ_cols_wrapper)
+        1    0.000    0.000    0.023    0.023 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_utils.py:215(_environ_cols_linux)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_utils.py:142(_is_utf)
+        1    0.000    0.000    0.000    0.000 /home/daniel/.local/lib/python3.5/site-packages/tqdm/_utils.py:129(__eq__)
+      700    2.098    0.003    2.098    0.003 /home/daniel/Desktop/PIC-1D-master/cycle.py:61(update)
+      700    2.413    0.003    2.999    0.004 /home/daniel/Desktop/PIC-1D-master/cycle.py:47(field_p)
+      701    1.290    0.002    1.290    0.002 /home/daniel/Desktop/PIC-1D-master/cycle.py:70(outphase)
+      700    0.126    0.000    0.128    0.000 /home/daniel/Desktop/PIC-1D-master/cycle.py:37(field_n)
+      700    4.725    0.007    5.983    0.009 /home/daniel/Desktop/PIC-1D-master/cycle.py:4(density)
+      700    0.286    0.000    0.386    0.001 /home/daniel/Desktop/PIC-1D-master/cycle.py:19(potential)
+        1    1.770    1.770  106.490  106.490 /home/daniel/Desktop/PIC-1D-master/main.py:9(main)
+        1    0.007    0.007    0.010    0.010 /home/daniel/Desktop/PIC-1D-master/starter.py:15(cold_plasma)
+  4300800    1.780    0.000    1.780    0.000 /home/daniel/Desktop/PIC-1D-master/starter.py:12(get_i)
+     4096    0.003    0.000    0.003    0.000 /home/daniel/Desktop/PIC-1D-master/starter.py:5(__init__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:20(__enter__)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:81(add)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:26(__exit__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:67(__len__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:36(__init__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:16(__init__)
+        3    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:52(_commit_removals)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:106(remove)
+        4    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:58(__iter__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/_weakrefset.py:38(_remove)
+  2867200    8.030    0.000   46.825    0.000 /usr/lib/python3.5/copy.py:239(_deepcopy_dict)
+  2867200    1.138    0.000    4.241    0.000 /usr/lib/python3.5/copy.py:223(<listcomp>)
+  2867200    8.190    0.000   77.160    0.000 /usr/lib/python3.5/copy.py:269(_reconstruct)
+ 27238400    1.749    0.000    1.749    0.000 /usr/lib/python3.5/copy.py:192(_deepcopy_atomic)
+40141500/700   37.519    0.000   91.726    0.131 /usr/lib/python3.5/copy.py:137(deepcopy)
+  2867200    4.695    0.000    9.089    0.000 /usr/lib/python3.5/copy.py:222(_deepcopy_tuple)
+      700    1.346    0.002   91.721    0.131 /usr/lib/python3.5/copy.py:214(_deepcopy_list)
+ 10035900    4.169    0.000    5.563    0.000 /usr/lib/python3.5/copy.py:253(_keep_alive)
+  2867200    0.799    0.000    1.110    0.000 /usr/lib/python3.5/copyreg.py:87(__newobj__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/copyreg.py:96(_slotnames)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:826(start)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:213(__init__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:531(wait)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:252(_is_owned)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:1022(join)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:1060(_wait_for_tstate_lock)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:249(_acquire_restore)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:240(__exit__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:1118(daemon)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:332(notify)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:725(_newname)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:1134(daemon)
+        4    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:504(is_set)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:1224(current_thread)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:246(_release_save)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:355(notify_all)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:237(__enter__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:755(__init__)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:261(wait)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:964(_stop)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:510(set)
+        2    0.000    0.000    0.000    0.000 /usr/lib/python3.5/threading.py:496(__init__)
+        3    0.000    0.000    0.023    0.008 <frozen importlib._bootstrap>:966(_find_and_load)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:190(cb)
+       12    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:324(<genexpr>)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:745(exec_module)
+        3    0.000    0.000    0.023    0.008 <frozen importlib._bootstrap>:659(_load_unlocked)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:879(_find_spec)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:406(cached)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:716(find_spec)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:225(_verbose_message)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:94(acquire)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:372(__init__)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:436(spec_from_loader)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:119(release)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:163(__enter__)
+        5    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:856(__exit__)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:427(has_location)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:176(_get_module_lock)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:737(create_module)
+        3    0.000    0.000    0.023    0.008 <frozen importlib._bootstrap>:939(_find_and_load_unlocked)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:321(__exit__)
+        6    0.000    0.000    0.022    0.004 <frozen importlib._bootstrap>:214(_call_with_frames_removed)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:74(__init__)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:510(_init_module_attrs)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:314(__enter__)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:310(__init__)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:762(is_package)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:419(parent)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:996(_handle_fromlist)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:170(__exit__)
+        3    0.000    0.000    0.023    0.008 <frozen importlib._bootstrap>:570(module_from_spec)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:789(find_spec)
+        5    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:852(__enter__)
+        3    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:159(__init__)
+        2    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap>:235(_requires_builtin_wrapper)
+       18    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:366(_verbose_message)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:87(_path_isfile)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:342(_get_cached)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1133(find_spec)
+        5    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1064(_path_importer_cache)
+        5    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:68(_path_stat)
+       16    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:50(_path_join)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:78(_path_is_mode_type)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1101(_get_spec)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:911(exec_module)
+        4    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1215(find_spec)
+       16    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:52(<listcomp>)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:513(spec_from_file_location)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:1210(_get_spec)
+        1    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:892(__init__)
+        4    0.000    0.000    0.000    0.000 <frozen importlib._bootstrap_external>:34(_relax_case)
+        1    0.000    0.000    0.022    0.022 <frozen importlib._bootstrap_external>:903(create_module)
+     1399    0.001    0.000    0.001    0.000 {method 'pop' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 {method 'remove' of 'collections.deque' objects}
+        1    0.000    0.000    0.000    0.000 {method 'discard' of 'set' objects}
+     2100    0.066    0.000    0.066    0.000 {built-in method numpy.core.multiarray.zeros}
+        1    0.000    0.000    0.000    0.000 {built-in method numpy.fft.fftpack_lite.cffti}
+        4    0.000    0.000    0.000    0.000 {method 'remove' of 'set' objects}
+        6    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+        2    0.000    0.000    0.000    0.000 {method '__exit__' of '_thread.lock' objects}
+     2804    0.003    0.000    0.003    0.000 {built-in method numpy.core.multiarray.array}
+        1    0.022    0.022    0.022    0.022 {built-in method _imp.create_dynamic}
+        1    0.000    0.000    0.000    0.000 {built-in method _imp.is_frozen}
+     2101    0.001    0.000    0.001    0.000 {built-in method time.time}
+  2874209    0.245    0.000    0.245    0.000 {built-in method builtins.len}
+        2    0.000    0.000    0.000    0.000 {built-in method _imp.exec_builtin}
+ 83150200    7.541    0.000    7.541    0.000 {method 'get' of 'dict' objects}
+ 12907896    0.922    0.000    0.922    0.000 {method 'append' of 'list' objects}
+        9    0.000    0.000    0.000    0.000 {built-in method _thread.allocate_lock}
+        5    0.000    0.000    0.000    0.000 {method 'add' of 'set' objects}
+        1    0.000    0.000    0.000    0.000 {method 'locked' of '_thread.lock' objects}
+        2    0.000    0.000    0.000    0.000 {method '__enter__' of '_thread.lock' objects}
+      705    0.000    0.000    0.000    0.000 {method 'release' of '_multiprocessing.SemLock' objects}
+        3    0.000    0.000    0.000    0.000 {built-in method _imp.is_builtin}
+  2867201    0.312    0.000    0.312    0.000 {built-in method __new__ of type object at 0xa3ee00}
+  2867200    0.219    0.000    0.219    0.000 {method 'items' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {method 'append' of 'collections.deque' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method _thread.start_new_thread}
+  4300800    3.273    0.000    3.273    0.000 {method '__deepcopy__' of 'numpy.generic' objects}
+     2104    0.001    0.000    0.001    0.000 {built-in method builtins.max}
+  2867219    1.212    0.000    1.212    0.000 {built-in method builtins.hasattr}
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.abs}
+ 10035217    2.380    0.000    2.380    0.000 {built-in method builtins.getattr}
+      705    0.002    0.000    0.002    0.000 {method 'acquire' of '_multiprocessing.SemLock' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method _imp.exec_dynamic}
+      700    0.004    0.000    0.004    0.000 {built-in method numpy.fft.fftpack_lite.cfftb}
+        5    0.000    0.000    0.000    0.000 {built-in method posix.stat}
+     1312    0.001    0.000    0.001    0.000 {built-in method builtins.chr}
+      700    0.007    0.000    0.007    0.000 {built-in method numpy.fft.fftpack_lite.cfftf}
+        8    0.000    0.000    0.000    0.000 {built-in method _thread.get_ident}
+       10    0.000    0.000    0.000    0.000 {method 'rpartition' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'get' of 'mappingproxy' objects}
+     2799    0.002    0.000    0.002    0.000 {method 'pop' of 'collections.OrderedDict' objects}
+  2867200    2.024    0.000    2.024    0.000 {method '__reduce_ex__' of 'object' objects}
+  2867200    0.662    0.000    0.662    0.000 {method 'update' of 'dict' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method _imp.create_builtin}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        3    0.000    0.000    0.000    0.000 {method 'release' of '_thread.lock' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method fcntl.ioctl}
+       32    0.000    0.000    0.000    0.000 {method 'rstrip' of 'str' objects}
+      703    0.014    0.000    0.014    0.000 {method 'write' of '_io.TextIOWrapper' objects}
+     4219    0.011    0.000    0.011    0.000 {method 'format' of 'str' objects}
+     3503    0.001    0.000    0.001    0.000 {built-in method builtins.divmod}
+      701    0.000    0.000    0.000    0.000 {method 'flush' of '_io.TextIOWrapper' objects}
+      705    0.000    0.000    0.000    0.000 {method 'release' of '_thread.RLock' objects}
+        5    0.000    0.000    0.000    0.000 {built-in method _imp.acquire_lock}
+        1    0.000    0.000    0.000    0.000 {method 'difference' of 'set' objects}
+        2    0.000    0.000    0.000    0.000 {built-in method numpy.core.multiarray.result_type}
+        3    0.000    0.000    0.000    0.000 {built-in method builtins.any}
+        8    0.000    0.000    0.000    0.000 {built-in method _imp.release_lock}
+        2    0.000    0.000    0.000    0.000 {built-in method numpy.core.multiarray.arange}
+        1    0.000    0.000    0.000    0.000 {built-in method builtins.min}
+        2    0.000    0.000    0.000    0.000 {built-in method _operator.index}
+ 58780402    3.479    0.000    3.479    0.000 {built-in method builtins.id}
+       16    0.000    0.000    0.000    0.000 {method 'join' of 'str' objects}
+  7168000    0.785    0.000    0.785    0.000 {built-in method builtins.issubclass}
+      702    0.048    0.000    0.048    0.000 {method 'astype' of 'numpy.ndarray' objects}
+  8601607    1.037    0.000    1.037    0.000 {built-in method builtins.isinstance}
+        2    0.000    0.000    0.000    0.000 {method 'endswith' of 'str' objects}
+        1    0.000    0.000    0.000    0.000 {method 'encode' of 'str' objects}
+      705    0.001    0.000    0.001    0.000 {method 'acquire' of '_thread.RLock' objects}

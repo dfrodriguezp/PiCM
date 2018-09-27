@@ -1,17 +1,6 @@
 from params import *
 import numpy
 
-class Particle(object):
-    def __init__(self, pos, vel, qm, move):
-        self.pos = pos
-        self.vel = vel
-        self.qm = qm
-        self.q = (1 / self.qm) * (L / NP)
-        self.move = move
-
-    def get_i(self):
-        return int(self.pos / dx)
-
 def cold_plasma():
     margin = dx / 5
     mobilePos = numpy.linspace(margin, L - margin, NP)

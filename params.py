@@ -2,7 +2,7 @@ import numpy
 
 NP = 2048
 NG = 256
-steps = 1
+steps = 700
 L = 4 * numpy.pi
 dx = L / (NG - 1)
 dt = 0.1

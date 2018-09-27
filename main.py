@@ -13,7 +13,7 @@ def main():
     # for i in range(len(folders)):
     #     os.system("mkdir -p results{}".format(folders[i]))
 
-    for step in range(steps):
+    for step in tqdm(range(steps)):
         nodeIndex = numpy.array([int(positions[i] / dx) for i in range(NP * 2)])
         h = positions - (nodeIndex * dx)
         nxt = (nodeIndex + 1) % NG
