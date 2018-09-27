@@ -3,36 +3,34 @@ from params import *
 from starter import *
 import numpy
 from tqdm import tqdm
+import copy
 import os
+from matplotlib import pyplot
 
 def main():
-    positions, velocities, charges = cold_plasma()
+    particles = cold_plasma()
     # particles = twoStream1()
 
-    # folders = ("/phase_space", "/field")
-    # for i in range(len(folders)):
-    #     os.system("mkdir -p results{}".format(folders[i]))
+    folders = ("/phase_space", "/field")
+    for i in range(len(folders)):
+        os.system("mkdir -p results{}".format(folders[i]))
 
     for step in tqdm(range(steps)):
-        nodeIndex = numpy.array([int(positions[i] / dx) for i in range(NP * 2)])
-        h = positions - (nodeIndex * dx)
-        nxt = (nodeIndex + 1) % NG
-
-        rho = density(charges, nodeIndex, h, nxt)
+        rho = density(particles)
         phi = potential(rho)
         E_n = field_n(phi)
-        E_p = field_p(E_n, nodeIndex, h, nxt)
+        E_p = field_p(E_n, particles)
 
         if step == 0:
-            outphase(-1.0, velocities, charges, E_p)
+            particles = outphase(-1.0, particles, E_p)
 
-        update(positions, velocities, charges, E_p)
+        particles = update(particles, E_p)
 
-        final_velocities = numpy.copy(velocities)
+        final_parts = copy.deepcopy(particles)
 
-        outphase(1.0, final_velocities, charges, E_p)
+        final_parts = outphase(1.0, final_parts, E_p)
 
-        # Write data
+        # # Write data
         # if step % 10 == 0:
         #     phase_space = open("results/phase_space/step_{}.dat".format(step), "w")
         #     Efield = open("results/field/step_{}.dat".format(step), "w")
@@ -44,15 +42,17 @@ def main():
         #     phase_space.close()
         #     Efield.close()
 
-    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
-    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
+    os.system("mkdir -p test/")
+    
+    grid_test = open("test/grid_test.txt", mode="w")
+    for i, _ in enumerate(rho):
+        grid_test.write("{} {} {}\n".format(rho[i], phi[i], E_n[i]))
+    grid_test.close()
 
-    assert(numpy.allclose(pos_test, positions))
-    assert(numpy.allclose(vel_test, velocities))
-    assert(numpy.allclose(rho_test, rho))
-    assert(numpy.allclose(phi_test, phi))
-    assert(numpy.allclose(E_n_test, E_n))
-    assert(numpy.allclose(E_p_test, E_p))
+    particles_test = open("test/particles_test.txt", mode="w")
+    for i, _ in enumerate(particles):
+        particles_test.write("{} {} {}\n".format(particles[i].pos, particles[i].vel, E_p[i]))
+    particles_test.close()
 
 if __name__ == '__main__':
     main()

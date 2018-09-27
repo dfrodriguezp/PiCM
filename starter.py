@@ -1,33 +1,50 @@
 from params import *
 import numpy
+from matplotlib import pyplot
+
+class Particle(object):
+    def __init__(self, pos, vel, qm, move):
+        self.pos = pos
+        self.vel = vel
+        self.qm = qm
+        self.q = (1 / self.qm) * (L / NP)
+        self.move = move
+
+    def get_i(self):
+        return int(self.pos / dx)
 
 def cold_plasma():
+    parts = list()
     margin = dx / 5
-    mobilePos = numpy.linspace(margin, L - margin, NP)
-    fixedPos = numpy.linspace(margin, L - margin, NP)
+    e_pos = numpy.linspace(margin, L - margin, NP)
+    i_pos = numpy.linspace(margin, L - margin, NP)
 
-    ks = 2 * n * numpy.pi / L
+    for i in range(NP):
+        x0 = e_pos[i]
+        theta = ks * x0
+        x1 = x0 + A * numpy.cos(theta)
 
-    mobilePos = (mobilePos + A * numpy.cos(ks * mobilePos)) % L
-    velocities = numpy.zeros(NP * 2)
-    charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
-    positions = numpy.concatenate((mobilePos, fixedPos))
+        x1 = x1 % L
 
-    return positions, velocities, charges
+        parts.append(Particle(x1, 0.0, -1.0, True))
+
+    for p in range(NP):
+        parts.append(Particle(i_pos[p], 0.0, 1.0, False))
+
+    return parts
 
 def twoStream1():
     parts = []
     sep = L / (NP / 2)
-    ks = 2 * n * numpy.pi / L
-
     for i in range(int(NP / 2)):
         # unperturbed position
         x0 = (i + 0.5) * sep
+
         # perturbation
         theta = ks * x0
-        dX = A * numpy.cos(theta)
-        x1 = x0 + dX
-        x2 = x0 - dX
+        dx = A * numpy.cos(theta)
+        x1 = x0 + dx
+        x2 = x0 - dx
 
         # periodic boundaries
         x1 = x1 % L
@@ -43,3 +60,6 @@ def twoStream1():
         parts.append(Particle(x0, 0.0, 1.0, False))
 
     return parts
+
+
+

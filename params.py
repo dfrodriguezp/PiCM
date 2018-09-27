@@ -8,3 +8,4 @@ dx = L / NG
 dt = 0.1
 A = 1e-3
 n = 1
+ks = 2 * n * numpy.pi / L
