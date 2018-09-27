@@ -39,7 +39,7 @@ def field_n(phi):
 
     return E
 
-def field_p(field, positions, velocities, charges, moves, nodeIndex, h, nxt):
+def field_p(field, positions, velocities, moves, nodeIndex, h, nxt):
     E = numpy.zeros(len(positions))
 
     for i, _ in enumerate(positions):
@@ -58,7 +58,7 @@ def update(positions, velocities, charges, moves, field):
 
             positions[i] = positions[i] % L
     
-def outphase(direction, field, velocities, charges, moves):
+def outphase(direction, velocities, charges, moves, field):
     dT = 0.5 * direction * dt
     for i, _ in enumerate(velocities):
         if moves[i]:

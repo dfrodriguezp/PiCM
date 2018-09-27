@@ -23,10 +23,10 @@ def main():
         rho = density(charges, nodeIndex, h, nxt)
         phi = potential(rho)
         E_n = field_n(phi)
-        E_p = field_p(E_n, positions, velocities, charges, moves, nodeIndex, h, nxt)
+        E_p = field_p(E_n, positions, velocities, moves, nodeIndex, h, nxt)
 
         if step == 0:
-            outphase(-1.0, E_p, velocities, charges, moves)
+            outphase(-1.0, velocities, charges, moves, E_p)
 
         update(positions, velocities, charges, moves, E_p)
 
@@ -46,11 +46,17 @@ def main():
         #     Efield.close()
 
 
-    pos_test, vel_test = numpy.loadtxt("test/test.txt", unpack=True)
-    for i, _ in enumerate(positions):
-        print(pos_test[i], positions[i], pos_test[i] == positions[i])
+    rho_test, phi_test, E_n_test, E_p_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
+    pos_test, vel_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
+
+    # for i, _ in enumerate(positions):
+    #     print(pos_test[i], positions[i], pos_test[i] == positions[i])
     # assert(numpy.allclose(pos_test, positions))
-    # assert(numpy.allclose(vel_test, final_velocities))
+    # assert(numpy.allclose(vel_test, velocities))
+    # assert(numpy.allclose(rho_test, rho))
+    # assert(numpy.allclose(phi_test, phi))
+    # assert(numpy.allclose(E_n_test, E_n))
+    # assert(numpy.allclose(E_p_test, E_p))
 
 
 if __name__ == '__main__':
