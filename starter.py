@@ -1,6 +1,5 @@
 from params import *
 import numpy
-from matplotlib import pyplot
 
 class Particle(object):
     def __init__(self, pos, vel, qm, move):
