@@ -15,24 +15,23 @@ class Particle(object):
 
 def cold_plasma():
     margin = dx / 5
-    e_pos = numpy.linspace(margin, L - margin, NP)
-    i_pos = numpy.linspace(margin, L - margin, NP)
+    mobilePos = numpy.linspace(margin, L - margin, NP)
+    fixedPos = numpy.linspace(margin, L - margin, NP)
 
     ks = 2 * n * numpy.pi / L
 
-    electronPos = (e_pos + A * numpy.cos(ks * e_pos)) % L
-    velocities = [0] * 2*NP
-    charges = [(1 / -1) * (L / NP)] * NP + [(1 / 1) * (L / NP)] * NP
-    moves = [True] * NP + [False] * NP
-    positions = list(electronPos) + list(i_pos)
-    
-    return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float), numpy.array(moves)
+    mobilePos = (mobilePos + A * numpy.cos(ks * mobilePos)) % L
+    velocities = numpy.zeros(NP * 2)
+    charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
+    positions = numpy.concatenate((mobilePos, fixedPos))
+
+    return positions, velocities, charges
 
 def twoStream1():
     parts = []
     sep = L / (NP / 2)
     ks = 2 * n * numpy.pi / L
-    
+
     for i in range(int(NP / 2)):
         # unperturbed position
         x0 = (i + 0.5) * sep

@@ -32,34 +32,28 @@ def potential(rho):
 def field_n(phi):
     E = numpy.zeros(NG)
     for i in range(NG):
-        nxt_i = i + 1 if ((i+1) < NG) else 0
-        pvr_i = i - 1 if (i > 0) else NG-1
+        nxt = (i + 1) % NG
+        prv = (i - 1) % NG
 
-        E[i] = (phi[pvr_i] - phi[nxt_i]) / (dx * 2)
+        E[i] = (phi[prv] - phi[nxt]) / (dx * 2)
 
     return E
 
-def field_p(field, positions, velocities, moves, nodeIndex, h, nxt):
-    E = numpy.zeros(len(positions))
+def field_p(field, nodeIndex, h, nxt):
+    E = numpy.zeros(NP * 2)
 
-    for i, _ in enumerate(positions):
-        if moves[i]:
-            E[i] += field[nodeIndex[i]] * (dx - h[i]) + field[nxt[i]] * h[i]
+    for i in range(NP):
+        E[i] += field[nodeIndex[i]] * (dx - h[i]) + field[nxt[i]] * h[i]
 
     E /= dx
 
     return E
 
-def update(positions, velocities, charges, moves, field):
-    for i in range(len(positions)):
-        if moves[i]:
-            velocities[i] += field[i] * numpy.sign(charges[i]) * dt
-            positions[i] += velocities[i] * dt
+def update(positions, velocities, charges, field):
+    velocities += field * numpy.sign(charges) * dt
+    positions += velocities * dt
+    positions = positions % L
 
-            positions[i] = positions[i] % L
-    
-def outphase(direction, velocities, charges, moves, field):
+def outphase(direction, velocities, charges, field):
     dT = 0.5 * direction * dt
-    for i, _ in enumerate(velocities):
-        if moves[i]:
-            velocities[i] += field[i] * numpy.sign(charges[i]) * dT
+    velocities += field * numpy.sign(charges) * dT
