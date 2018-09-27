@@ -26,7 +26,7 @@ def cold_plasma():
     moves = [True] * NP + [False] * NP
     positions = list(electronPos) + list(i_pos)
     
-    return numpy.array(positions), numpy.array(velocities), numpy.array(charges), numpy.array(moves)
+    return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float), numpy.array(moves)
 
 def twoStream1():
     parts = []
