@@ -1,20 +1,11 @@
 from params import *
 import numpy
 
-def density(particles):
+def density(charges, nodeIndex, h, nxt):
     rho = numpy.zeros(NG)
-
-    for p in range(len(particles)):
-        i = particles[p].get_i()
-        h = particles[p].pos - (i * dx)
-
-        nxt = (i + 1) if (i + 1 < NG) else 0
-        rho[i] += particles[p].q * (dx - h)
-        rho[nxt] += particles[p].q * h
-    #
-    # rho[NG-1] = (rho[NG-1] + rho[0]) * 0.5
-    # rho[NG-1] += rho[0]
-    # rho[0] = rho[NG-1]
+    for i, node in enumerate(nodeIndex):
+        rho[node] += charges[i] * (dx - h[i])
+        rho[nxt[i]] += charges[i] * h[i]
 
     rho /= (dx * dx)
 
@@ -48,41 +39,27 @@ def field_n(phi):
 
     return E
 
-def field_p(field, particles):
-    E = numpy.zeros(len(particles))
-    for p in range(len(particles)):
-        if particles[p].move:
-            i = particles[p].get_i()
-            h = particles[p].pos - (i * dx)
-            nxt = (i + 1) if (i + 1 < NG) else 0
+def field_p(field, positions, velocities, charges, moves, nodeIndex, h, nxt):
+    E = numpy.zeros(len(positions))
 
-            E[p] += field[i] * (dx - h) + field[nxt] * h
+    for i, _ in enumerate(positions):
+        if moves[i]:
+            E[i] += field[nodeIndex[i]] * (dx - h[i]) + field[nxt[i]] * h[i]
 
     E /= dx
 
     return E
 
-def update(particles, field):
-    """
-    asdfasdfasdf
-    asdfasdfadsf
-    particles: (string) asdfasdf
-    field: (int) asdfasdfasdf
-    """
-    for p in range(len(particles)):
-        if particles[p].move:
-            particles[p].vel += field[p] * particles[p].qm * dt
-            particles[p].pos += particles[p].vel * dt
+def update(positions, velocities, charges, moves, field):
+    for i in range(len(positions)):
+        if moves[i]:
+            velocities[i] += field[i] * numpy.sign(charges[i]) * dt
+            positions[i] += velocities[i] * dt
 
-            particles[p].pos = particles[p].pos % L
-    return particles
+            positions[i] = positions[i] % L
     
-def outphase(direction, particles, field):
+def outphase(direction, field, velocities, charges, moves):
     dT = 0.5 * direction * dt
-    for p in range(len(particles)):
-        if particles[p].move:
-            particles[p].vel += field[p] * particles[p].qm * dT
-    return particles
-
-
-
+    for i, _ in enumerate(velocities):
+        if moves[i]:
+            velocities[i] += field[i] * numpy.sign(charges[i]) * dT
