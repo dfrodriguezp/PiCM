@@ -44,15 +44,17 @@ def main():
         #     phase_space.close()
         #     Efield.close()
 
-    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
-    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
+    os.system("mkdir -p test/")
+    
+    grid_test = open("test/grid_test.txt", mode="w")
+    for i, _ in enumerate(rho):
+        grid_test.write("{} {} {}\n".format(rho[i], phi[i], E_n[i]))
+    grid_test.close()
 
-    assert(numpy.allclose(pos_test, positions))
-    assert(numpy.allclose(vel_test, velocities))
-    assert(numpy.allclose(rho_test, rho))
-    assert(numpy.allclose(phi_test, phi))
-    assert(numpy.allclose(E_n_test, E_n))
-    assert(numpy.allclose(E_p_test, E_p))
+    particles_test = open("test/particles_test.txt", mode="w")
+    for i, _ in enumerate(positions):
+        particles_test.write("{} {} {}\n".format(positions[i], velocities[i], E_p[i]))
+    particles_test.close()
 
 if __name__ == '__main__':
     main()

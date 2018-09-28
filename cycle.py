@@ -52,7 +52,7 @@ def field_p(field, nodeIndex, h, nxt):
 def update(positions, velocities, charges, field):
     velocities += field * numpy.sign(charges) * dt
     positions += velocities * dt
-    positions = positions % L
+    positions %= L
 
 def outphase(direction, velocities, charges, field):
     dT = 0.5 * direction * dt

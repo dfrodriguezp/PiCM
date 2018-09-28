@@ -13,7 +13,7 @@ def cold_plasma():
     charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
     positions = numpy.concatenate((mobilePos, fixedPos))
 
-    return positions, velocities, charges
+    return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float)
 
 def twoStream1():
     parts = []

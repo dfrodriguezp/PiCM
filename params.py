@@ -1,8 +1,8 @@
 import numpy
 
-NP = 2048
+NP = 8192
 NG = 256
-steps = 1000
+steps = 100
 L = 4 * numpy.pi
 dx = L / NG
 dt = 0.1
