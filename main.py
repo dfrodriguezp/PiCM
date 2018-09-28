@@ -14,14 +14,18 @@ def main():
     #     os.system("mkdir -p results{}".format(folders[i]))
 
     for step in tqdm(range(steps)):
-        nodeIndex = numpy.array([int(positions[i] / dx) for i in range(NP * 2)])
+        nodeIndex = numpy.array(positions / dx, dtype=int)
         h = positions - (nodeIndex * dx)
-        nxt = (nodeIndex + 1) % NG
 
-        rho = density(charges, nodeIndex, h, nxt)
+        # print(positions[nodeIndex == 256], numpy.where(nodeIndex == 256)[0])
+
+        indexes_in_node = [numpy.where(nodeIndex == node)[0] for node in range(NG)]
+        indexes_moves_in_node = [indexes_in_node[node][indexes_in_node[node] < NP] for node in range(NG)]
+
+        rho = density(charges, indexes_in_node, h)
         phi = potential(rho)
         E_n = field_n(phi)
-        E_p = field_p(E_n, nodeIndex, h, nxt)
+        E_p = field_p(E_n, indexes_moves_in_node, h)
 
         if step == 0:
             outphase(-1.0, velocities, charges, E_p)
@@ -44,17 +48,15 @@ def main():
         #     phase_space.close()
         #     Efield.close()
 
-    os.system("mkdir -p test/")
-    
-    grid_test = open("test/grid_test.txt", mode="w")
-    for i, _ in enumerate(rho):
-        grid_test.write("{} {} {}\n".format(rho[i], phi[i], E_n[i]))
-    grid_test.close()
+    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
+    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
 
-    particles_test = open("test/particles_test.txt", mode="w")
-    for i, _ in enumerate(positions):
-        particles_test.write("{} {} {}\n".format(positions[i], velocities[i], E_p[i]))
-    particles_test.close()
+    assert(numpy.allclose(pos_test, positions))
+    assert(numpy.allclose(vel_test, velocities))
+    assert(numpy.allclose(rho_test, rho))
+    assert(numpy.allclose(phi_test, phi))
+    assert(numpy.allclose(E_n_test, E_n))
+    assert(numpy.allclose(E_p_test, E_p))
 
 if __name__ == '__main__':
     main()
