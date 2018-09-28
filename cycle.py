@@ -43,20 +43,20 @@ def field_n(phi):
     return E
 
 
-def field_p(field, indexes_moves_in_node, h):
+def field_p(field_nodes, indexes_moves_in_node, h):
     E = numpy.zeros(NP * 2)
     for node in range(NG):
-        E[indexes_moves_in_node[node]] += field[node] * (dx - h[indexes_moves_in_node[node]]) + field[(node + 1) % NG] * h[indexes_moves_in_node[node]]
+        E[indexes_moves_in_node[node]] += field_nodes[node] * (dx - h[indexes_moves_in_node[node]]) + field_nodes[(node + 1) % NG] * h[indexes_moves_in_node[node]]
     E /= dx
     return E
 
 
-def update(positions, velocities, charges, field):
-    velocities += field * numpy.sign(charges) * dt
+def update(positions, velocities, charges, field_particles):
+    velocities += field_particles * numpy.sign(charges) * dt
     positions += velocities * dt
     positions %= L
 
 
-def outphase(direction, velocities, charges, field):
+def outphase(direction, velocities, charges, field_particles):
     dT = 0.5 * direction * dt
-    velocities += field * numpy.sign(charges) * dT
+    velocities += field_particles * numpy.sign(charges) * dT

@@ -19,22 +19,22 @@ def main():
 
         # print(positions[nodeIndex == 256], numpy.where(nodeIndex == 256)[0])
 
-        indexes_in_node = [numpy.where(nodeIndex == node)[0] for node in range(NG)]
-        indexes_moves_in_node = [indexes_in_node[node][indexes_in_node[node] < NP] for node in range(NG)]
+        indexesInNode = [numpy.where(nodeIndex == node)[0] for node in range(NG)]
+        indexesMovesInNode = [indexesInNode[node][indexesInNode[node] < NP] for node in range(NG)]
 
-        rho = density(charges, indexes_in_node, h)
+        rho = density(charges, indexesInNode, h)
         phi = potential(rho)
         E_n = field_n(phi)
-        E_p = field_p(E_n, indexes_moves_in_node, h)
+        E_p = field_p(E_n, indexesMovesInNode, h)
 
         if step == 0:
             outphase(-1.0, velocities, charges, E_p)
 
         update(positions, velocities, charges, E_p)
 
-        final_velocities = numpy.copy(velocities)
+        finalVelocities = numpy.copy(velocities)
 
-        outphase(1.0, final_velocities, charges, E_p)
+        outphase(1.0, finalVelocities, charges, E_p)
 
         # Write data
         # if step % 10 == 0:
