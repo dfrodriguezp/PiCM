@@ -1,10 +1,10 @@
 import numpy
 
-NP = 8192
-NG = 256
-steps = 100
-L = 4 * numpy.pi
+NP = 5000
+NG = 101
+steps = 2000
+L = 20.0
 dx = L / NG
 dt = 0.1
-A = 1e-3
+A = 1e-1
 n = 1

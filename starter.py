@@ -1,7 +1,7 @@
 from params import *
 import numpy
 
-def cold_plasma():
+def coldPlasma():
     margin = dx / 5
     mobilePos = numpy.linspace(margin, L - margin, NP)
     fixedPos = numpy.linspace(margin, L - margin, NP)
@@ -15,17 +15,18 @@ def cold_plasma():
 
     return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float)
 
-def twoStream1():
-    parts = []
+
+def twoStreamUniform():
     sep = L / (NP / 2)
     ks = 2 * n * numpy.pi / L
+    positions = list()
 
     for i in range(int(NP / 2)):
         # unperturbed position
         x0 = (i + 0.5) * sep
+
         # perturbation
-        theta = ks * x0
-        dX = A * numpy.cos(theta)
+        dX = A * numpy.cos(ks * x0)
         x1 = x0 + dX
         x2 = x0 - dX
 
@@ -33,13 +34,29 @@ def twoStream1():
         x1 = x1 % L
         x2 = x2 % L
 
-        # add to parts
-        parts.append(Particle(x1, 1.0, -1.0, True))
-        parts.append(Particle(x2, -1.0, -1.0, True))
+        positions.append(x1)
+        positions.append(x2)
 
     sep = L / NP
-    for i in range (NP):
+    for i in range(NP):
         x0 = (i + 0.5) * sep
-        parts.append(Particle(x0, 0.0, 1.0, False))
+        positions.append(x0)
 
-    return parts
+    velocities = numpy.concatenate((numpy.ones(NP), numpy.zeros(NP)))
+    velocities[1::2] *= -1
+
+    charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
+
+    return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float)
+
+
+def twoStreamRandom():
+    margin = dx / 5
+    mobilePos = numpy.random.uniform(margin, L - margin, size=NP)
+    fixedPos = numpy.random.uniform(margin, L - margin, size=NP)
+
+    velocities = numpy.concatenate((numpy.random.choice([-1.0, 1.0], size=NP), numpy.zeros(NP)))
+    charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
+    positions = numpy.concatenate((mobilePos, fixedPos))
+
+    return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float)
