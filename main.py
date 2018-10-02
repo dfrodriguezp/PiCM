@@ -6,8 +6,8 @@ from tqdm import tqdm
 import os
 
 def main():
-    # positions, velocities, charges = coldPlasma()
-    positions, velocities, charges = twoStreamUniform()
+    positions, velocities, charges = coldPlasma()
+    # positions, velocities, charges = twoStreamUniform()
 
     folders = ("/phase_space", "/field", "/potential", "/density", "/energy")
     for i in range(len(folders)):

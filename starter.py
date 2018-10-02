@@ -10,7 +10,7 @@ def coldPlasma():
 
     mobilePos = (mobilePos + A * numpy.cos(ks * mobilePos)) % L
     velocities = numpy.zeros(NP * 2)
-    charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
+    charges = (L / (NP * 2)) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
     positions = numpy.concatenate((mobilePos, fixedPos))
 
     return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float)
@@ -45,7 +45,7 @@ def twoStreamUniform():
     velocities = numpy.concatenate((numpy.ones(NP), numpy.zeros(NP)))
     velocities[1::2] *= -1
 
-    charges = (L / NP) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
+    charges = (L / (NP * 2)) * numpy.concatenate((-numpy.ones(NP), numpy.ones(NP)))
 
     return numpy.array(positions, dtype=float), numpy.array(velocities, dtype=float), numpy.array(charges, dtype=float)
 
