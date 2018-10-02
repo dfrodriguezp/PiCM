@@ -7,7 +7,7 @@ class Particle(object):
         self.pos = pos
         self.vel = vel
         self.qm = qm
-        self.q = (1 / self.qm) * (L / NP)
+        self.q = (1 / self.qm) * (L / (NP * 2))
         self.move = move
 
     def get_i(self):
