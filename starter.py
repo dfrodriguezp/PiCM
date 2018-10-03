@@ -1,4 +1,3 @@
-from params import *
 import numpy
 
 def cold_plasma():

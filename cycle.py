@@ -1,9 +1,8 @@
-from params import *
 import numpy
 
-def density(charges, nodeIndex, h, nxt):
-    rho = numpy.zeros(NG)
-    for i, node in enumerate(nodeIndex):
+def density(NG, dx, charges, current, h, nxt):
+    rho = numpy.zeros(NG, NG)
+    for i, node in enumerate(current):
         rho[node] += charges[i] * (dx - h[i])
         rho[nxt[i]] += charges[i] * h[i]
 
@@ -11,7 +10,7 @@ def density(charges, nodeIndex, h, nxt):
 
     return rho
 
-def potential(rho):
+def potential(NG, dx, rho):
     rho_k = numpy.fft.fft(rho)
     i = 0.0 + 1.0j
     W = numpy.exp(2 * i * numpy.pi / NG)
@@ -29,7 +28,7 @@ def potential(rho):
 
     return phi
 
-def field_n(phi):
+def field_n(NG, dx, phi):
     E = numpy.zeros(NG)
     for i in range(NG):
         nxt = (i + 1) % NG
@@ -39,21 +38,21 @@ def field_n(phi):
 
     return E
 
-def field_p(field, nodeIndex, h, nxt):
-    E = numpy.zeros(NP * 2)
+def field_p(dx, field, nodeIndex, h, nxt, move_index):
+    E = numpy.zeros(len(nodeIndex))
 
-    for i in range(NP):
+    for i in move_index:
         E[i] += field[nodeIndex[i]] * (dx - h[i]) + field[nxt[i]] * h[i]
 
     E /= dx
 
     return E
 
-def update(positions, velocities, charges, field):
+def update(positions, velocities, charges, field, dt, L):
     velocities += field * numpy.sign(charges) * dt
     positions += velocities * dt
-    positions = positions % L
+    positions %= L
 
-def outphase(direction, velocities, charges, field):
+def outphase(direction, velocities, charges, field, dt):
     dT = 0.5 * direction * dt
     velocities += field * numpy.sign(charges) * dT
