@@ -11,39 +11,38 @@ def main(sample):
     positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True)
     velocities = numpy.loadtxt(sample, usecols=(2, 3), unpack=True)
     charges, move = numpy.loadtxt(sample, usecols=(4, 5), unpack=True)
-    # particles = twoStream1()
 
     # folders = ("/phase_space", "/field")
     # for i in range(len(folders)):
     #     os.system("mkdir -p results{}".format(folders[i]))
     NG = 256
-    steps = 1
+    steps = 2
     L = 4 * numpy.pi
     dx = L / NG
     dt = 0.1
     A = 1e-3
     n = 1
 
-    NP = len(positions)
+    NP = len(positions[0])
     move_indexes, = numpy.where(move == 1)
     for step in tqdm(range(steps)):
         current = numpy.array(positions / dx, dtype=int)
         h = positions - (current * dx)
         nxt = (current + 1) % NG
 
-        rho = density(NG, dx, charges, current, h, nxt)
-        # phi = potential(NG, dx, rho)
-        # E_n = field_n(NG, dx, phi)
-        # E_p = field_p(dx, E_n, current, h, nxt, move_indexes)
+        rho = density(NP, NG, dx, charges, current, h, nxt)
+        phi = potential(NG, dx, rho)
+        E_n = field_n(NG, dx, phi)
+        E_p = field_p(NP, dx, E_n, current, h, nxt, move_indexes)
 
-        # if step == 0:
-        #     outphase(-1.0, velocities, charges, E_p, dt)
+        if step == 0:
+            outphase(-1.0, velocities, charges, E_p, dt)
 
-        # update(nxt, velocities, charges, E_p, dt, L)
+        update(positions, velocities, charges, E_p, dt, L)
 
-        # final_velocities = numpy.copy(velocities)
+        final_velocities = numpy.copy(velocities)
 
-        # outphase(1.0, final_velocities, charges, E_p, dt)
+        outphase(1.0, final_velocities, charges, E_p, dt)
 
         # Write data
         # if step % 10 == 0:
@@ -60,8 +59,8 @@ def main(sample):
     # rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
     # pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
 
-    # assert(numpy.allclose(pos_test, positions))
-    # assert(numpy.allclose(vel_test, velocities))
+    # assert(numpy.allclose(pos_test, positions[0]))
+    # assert(numpy.allclose(vel_test, velocities[0]))
     # assert(numpy.allclose(rho_test, rho))
     # assert(numpy.allclose(phi_test, phi))
     # assert(numpy.allclose(E_n_test, E_n))
