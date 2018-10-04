@@ -8,37 +8,49 @@ import click
 @click.command()
 @click.option("-sample", default="state.dat")
 def main(sample):
-    positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True)
-    velocities = numpy.loadtxt(sample, usecols=(2, 3), unpack=True)
+    positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True).T
+    velocities = numpy.loadtxt(sample, usecols=(2, 3), unpack=True).T
     charges, move = numpy.loadtxt(sample, usecols=(4, 5), unpack=True)
 
     # folders = ("/phase_space", "/field")
     # for i in range(len(folders)):
     #     os.system("mkdir -p results{}".format(folders[i]))
-    NG = 256
-    steps = 2
-    L = 4 * numpy.pi
-    dx = L / NG
+    NGx = 256
+    NGy = 1
+    steps = 100
+    Lx = 4 * numpy.pi
+    Ly = 4 * numpy.pi
+    dx = Lx / NGx
+    dy = Ly / NGy
     dt = 0.1
-    A = 1e-3
     n = 1
 
-    NP = len(positions[0])
+
+    NP = len(positions)
     move_indexes, = numpy.where(move == 1)
     for step in tqdm(range(steps)):
-        current = numpy.array(positions / dx, dtype=int)
-        h = positions - (current * dx)
-        nxt = (current + 1) % NG
+        
+        # in case of initial velocites in y are zero, the following test must be pass 
+        # assert(numpy.allclose(positions[:, 1], numpy.zeros_like(positions[:, 1])))
+        
+        currentNodesX = numpy.array(positions[:, 0] / dx, dtype=int)
+        currentNodesY = numpy.array(positions[:, 1] / dy, dtype=int)
 
-        rho = density(NP, NG, dx, charges, current, h, nxt)
-        phi = potential(NG, dx, rho)
-        E_n = field_n(NG, dx, phi)
-        E_p = field_p(NP, dx, E_n, current, h, nxt, move_indexes)
+
+        hx = positions[:, 0] - (currentNodesX * dx)
+        hy = positions[:, 1] - (currentNodesY * dy)
+        nxtX = (currentNodesX + 1) % NGx
+        nxtY = (currentNodesY + 1) % NGy
+
+        rho = density(NP, NGx, NGy, dx, dy, charges, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY)
+        phi = potential(NGx, NGy, dx, dy, rho)
+        E_n = field_n(NGx, NGy, dx, dy, phi)
+        E_p = field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes)
 
         if step == 0:
             outphase(-1.0, velocities, charges, E_p, dt)
 
-        update(positions, velocities, charges, E_p, dt, L)
+        update(positions, velocities, charges, E_p, dt, Lx, Ly)
 
         final_velocities = numpy.copy(velocities)
 
@@ -56,15 +68,15 @@ def main(sample):
         #     phase_space.close()
         #     Efield.close()
 
-    # rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
-    # pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
+    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
+    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
 
-    # assert(numpy.allclose(pos_test, positions[0]))
-    # assert(numpy.allclose(vel_test, velocities[0]))
-    # assert(numpy.allclose(rho_test, rho))
-    # assert(numpy.allclose(phi_test, phi))
-    # assert(numpy.allclose(E_n_test, E_n))
-    # assert(numpy.allclose(E_p_test, E_p))
+    assert(numpy.allclose(pos_test, positions[:, 0]))
+    assert(numpy.allclose(vel_test, velocities[:, 0]))
+    assert(numpy.allclose(rho_test, rho))
+    assert(numpy.allclose(phi_test, phi))
+    assert(numpy.allclose(E_n_test, E_n))
+    assert(numpy.allclose(E_p_test, E_p))
 
 if __name__ == '__main__':
     main()
