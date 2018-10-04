@@ -8,25 +8,28 @@ def density(NP, NGx, NGy, dx, dy, charges, currentNodesX, currentNodesY, hx, hy,
         rho[nxtX[i], currentNodesY[i]] += charges[i] * hx[i] * (dy - hy[i])
         rho[nxtX[i], nxtY[i]] += charges[i] * hx[i] * hy[i]
 
-    rho /= (dx * dx * dy * dy)
+    rho /= (dx * dy * dx * dy)
 
     return rho
 
 def potential(NGx, NGy, dx, dy, rho):
     rho_k = numpy.fft.fftn(rho)
-    i = 0.0 + 1.0j
-    W = numpy.exp(2 * i * numpy.pi / NGx) # no idea what should you do here !!!
+    Wx = numpy.exp(2 * 1j * numpy.pi / NGx)
+    Wy = numpy.exp(2 * 1j * numpy.pi / NGy)
     Wn = 1.0 + 0.0j
     Wm = 1.0 + 0.0j
+    dx_2 = dx * dx
+    dy_2 = dy * dy
 
     for n in range(NGx):
         for m in range(NGy):
-            denom = 4.0 + 0.0j
-            denom -= Wn + 1.0/Wn + Wm + 1.0/Wm
+            # denom = 4.0 + 0.0j
+            # denom -= Wn + 1.0/Wn + Wm + 1.0/Wm
+            denom = dy_2 * (2 - Wn - 1.0/Wn) + dx_2 * (2 - Wm - 1.0/Wm)
             if denom != 0:
-                rho_k[n, m] *= dx * dy / denom
-            Wm *= W
-        Wn *= W
+                rho_k[n, m] *= dx_2 * dy_2 / denom
+            Wm *= Wy
+        Wn *= Wx
 
     phi = numpy.fft.ifftn(rho_k)
     phi = numpy.real(phi)
@@ -40,16 +43,14 @@ def field_n(NGx, NGy, dx, dy, phi):
             nxt_i = (i + 1) % NGx
             prv_i = (i - 1) % NGx
 
-            E[0, i, j] = (phi[prv_i, j] - phi[nxt_i, j])
+            E[0, i, j] = (phi[prv_i, j] - phi[nxt_i, j]) / (dx * 2)
 
     for i in range(NGx):
         for j in range(NGy):
             nxt_j = (j + 1) % NGy
             prv_j = (j - 1) % NGy
 
-            E[1, i, j] = (phi[i, prv_j] - phi[i, nxt_j])
-
-    E /= (dx * 2) # I don't know how should this changed in order to take into account dy
+            E[1, i, j] = (phi[i, prv_j] - phi[i, nxt_j]) / (dy * 2)
 
     return E
 
@@ -76,8 +77,11 @@ def update(positions, velocities, charges, E_p, dt, Lx, Ly):
     velocities[:, 1] += E_p[1, :] * numpy.sign(charges) * dt
     positions += velocities * dt
 
-    positions[:, 0] = numpy.fmod(positions[:, 0], Lx)
-    positions[:, 1] = numpy.fmod(positions[:, 1], Ly)
+    # positions[:, 0] = numpy.fmod(positions[:, 0], Lx)
+    # positions[:, 1] = numpy.fmod(positions[:, 1], Ly)
+
+    positions[:, 0] %= Lx
+    positions[:, 1] %= Ly
 
     assert(numpy.all(positions[:, 0] < Lx))
     assert(numpy.all(positions[:, 1] < Ly))
