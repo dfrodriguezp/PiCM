@@ -23,8 +23,6 @@ def potential(NGx, NGy, dx, dy, rho):
 
     for n in range(NGx):
         for m in range(NGy):
-            # denom = 4.0 + 0.0j
-            # denom -= Wn + 1.0/Wn + Wm + 1.0/Wm
             denom = dy_2 * (2 - Wn - 1.0/Wn) + dx_2 * (2 - Wm - 1.0/Wm)
             if denom != 0:
                 rho_k[n, m] *= dx_2 * dy_2 / denom

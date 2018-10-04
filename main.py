@@ -19,7 +19,7 @@ def main(sample):
     NGy = 1
     steps = 1000
     Lx = 4 * numpy.pi
-    Ly = 4 * numpy.pi
+    Ly = 1.0
     dx = Lx / NGx
     dy = Ly / NGy
     dt = 0.1
@@ -36,7 +36,6 @@ def main(sample):
         currentNodesX = numpy.array(positions[:, 0] / dx, dtype=int)
         currentNodesY = numpy.array(positions[:, 1] / dy, dtype=int)
 
-
         hx = positions[:, 0] - (currentNodesX * dx)
         hy = positions[:, 1] - (currentNodesY * dy)
         nxtX = (currentNodesX + 1) % NGx
@@ -52,9 +51,9 @@ def main(sample):
 
         update(positions, velocities, charges, E_p, dt, Lx, Ly)
 
-        # final_velocities = numpy.copy(velocities)
+        final_velocities = numpy.copy(velocities)
 
-        # outphase(1.0, final_velocities, charges, E_p, dt)
+        outphase(1.0, final_velocities, charges, E_p, dt)
 
         # Write data
         # if step % 10 == 0:
@@ -74,14 +73,16 @@ def main(sample):
     # for i in range(NP):
     #     print(pos_test[i], positions[:, 0][i], pos_test[i] == positions[:, 0][i])
 
-    for i in range(NGx):
-        print(phi_test[i], phi[i][0], phi_test[i] == phi[i][0])
-    # assert(numpy.allclose(pos_test, positions[:, 0]))
-    # assert(numpy.allclose(vel_test, velocities[:, 0]))
-    # assert(numpy.allclose(rho_test, rho))
-    assert(numpy.allclose(phi_test, phi))
-    # assert(numpy.allclose(E_n_test, E_n))
-    # assert(numpy.allclose(E_p_test, E_p))
+    # print(E_p_test.shape, E_p.shape)
+    # print(rho.shape)
+    # for i in range(NGx):
+    #     print(rho_test[i], rho[i][0], rho_test[i] == rho[i][0])
+    assert(numpy.allclose(pos_test, positions[:, 0]))
+    assert(numpy.allclose(vel_test, velocities[:, 0]))
+    assert(numpy.allclose(rho_test, rho[:, 0]))
+    assert(numpy.allclose(phi_test, phi[:, 0]))
+    assert(numpy.allclose(E_n_test, E_n[0, :, 0]))
+    assert(numpy.allclose(E_p_test, E_p[0, :]))
 
 if __name__ == '__main__':
     main()
