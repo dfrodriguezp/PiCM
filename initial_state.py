@@ -22,13 +22,13 @@ def cold_plasma():
     move = numpy.concatenate((numpy.ones(NP), numpy.zeros(NP)))
     positions = numpy.concatenate((mobilePos, fixedPos))
 
-    return positions, numpy.zeros_like(positions), velocities, numpy.zeros_like(velocities), charges, move
+    return positions, numpy.zeros_like(positions), velocities, numpy.zeros_like(velocities), numpy.zeros_like(velocities), charges, move
 
 def main():
-    px, py, vx, vy, charges, move = cold_plasma()
+    px, py, vx, vy, vz, charges, move = cold_plasma()
     output = open("state.dat", "w")
     for i, _ in enumerate(px):
-        output.write("{} {} {} {} {} {}\n".format(px[i], py[i], vx[i], vy[i], charges[i], move[i]))
+        output.write("{} {} {} {} {} {} {}\n".format(px[i], py[i], vx[i], vy[i], vz[i], charges[i], move[i]))
     output.close()
 
 if __name__ == '__main__':

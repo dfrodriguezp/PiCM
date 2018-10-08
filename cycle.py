@@ -35,25 +35,25 @@ def potential(NGx, NGy, dx, dy, rho):
     return phi
 
 def field_n(NGx, NGy, dx, dy, phi):
-    E = numpy.zeros(shape=(2, NGx, NGy))
+    E = numpy.zeros(shape=(NGx, NGy, 3))
     for j in range(NGy):
         for i in range(NGx):
             nxt_i = (i + 1) % NGx
             prv_i = (i - 1) % NGx
 
-            E[0, i, j] = (phi[prv_i, j] - phi[nxt_i, j]) / (dx * 2)
+            E[i, j, 0] = (phi[prv_i, j] - phi[nxt_i, j]) / (dx * 2)
 
     for i in range(NGx):
         for j in range(NGy):
             nxt_j = (j + 1) % NGy
             prv_j = (j - 1) % NGy
 
-            E[1, i, j] = (phi[i, prv_j] - phi[i, nxt_j]) / (dy * 2)
+            E[i, j, 1] = (phi[i, prv_j] - phi[i, nxt_j]) / (dy * 2)
 
     return E
 
 def field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes):
-    E = numpy.zeros(shape=(2, NP))
+    E = numpy.zeros(shape=(NP, 3))
 
     for i in move_indexes:
         A = (dx - hx[i]) * (dy - hy[i])
@@ -61,22 +61,28 @@ def field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, m
         C = hx[i] * (dy - hy[i])
         D = hx[i] * hy[i]
         
-        E[:, i] += E_n[:, currentNodesX[i], currentNodesY[i]] * A \
-                 + E_n[:, currentNodesX[i], nxtY[i]] * B \
-                 + E_n[:, nxtX[i], currentNodesY[i]] * C \
-                 + E_n[:, nxtX[i], nxtY[i]] * D
+        E[i, :] += E_n[currentNodesX[i], currentNodesY[i], :] * A \
+                 + E_n[currentNodesX[i], nxtY[i], :] * B \
+                 + E_n[nxtX[i], currentNodesY[i], :] * C \
+                 + E_n[nxtX[i], nxtY[i], :] * D
 
     E /= (dx * dy)
 
     return E
 
-def update(positions, velocities, charges, E_p, dt, Lx, Ly):
-    velocities[:, 0] += E_p[0, :] * numpy.sign(charges) * dt
-    velocities[:, 1] += E_p[1, :] * numpy.sign(charges) * dt
-    positions += velocities * dt
+def boris(velocities, QoverM, E_p, Bext, dt, move_indexes):
+    for i in move_indexes:
+        a = 0.5 * QoverM[i] * Bext * dt
+        a_2 = numpy.linalg.norm(a) * numpy.linalg.norm(a)
+        b = (2 * a) / (1 + a_2)
+        v_minus = velocities[i] + 0.5 * QoverM[i] * E_p[i] * dt
+        v_prime = v_minus + numpy.cross(v_minus, a)
+        v_plus = v_minus + numpy.cross(v_prime, b)
+        velocities[i] = v_plus + 0.5 * QoverM[i] * E_p[i] * dt
 
-    # positions[:, 0] = numpy.fmod(positions[:, 0], Lx)
-    # positions[:, 1] = numpy.fmod(positions[:, 1], Ly)
+def update(positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes):
+    boris(velocities, QoverM, E_p, Bext, dt, move_indexes)
+    positions += velocities[:, (0, 1)] * dt
 
     positions[:, 0] %= Lx
     positions[:, 1] %= Ly
@@ -84,7 +90,6 @@ def update(positions, velocities, charges, E_p, dt, Lx, Ly):
     assert(numpy.all(positions[:, 0] < Lx))
     assert(numpy.all(positions[:, 1] < Ly))
 
-def outphase(direction, velocities, charges, E_p, dt):
+def outphase(direction, velocities, QoverM, E_p, Bext, dt, move_indexes):
     dT = 0.5 * direction * dt
-    velocities[:, 0] += E_p[0, :] * numpy.sign(charges) * dT
-    velocities[:, 1] += E_p[1, :] * numpy.sign(charges) * dT
+    boris(velocities, QoverM, E_p, Bext, dT, move_indexes)

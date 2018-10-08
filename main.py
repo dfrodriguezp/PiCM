@@ -1,5 +1,4 @@
-from cycle import *
-from starter import *
+import cycle
 import numpy
 from tqdm import tqdm
 import os
@@ -9,25 +8,27 @@ import click
 @click.option("-sample", default="state.dat")
 def main(sample):
     positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True).T
-    velocities = numpy.loadtxt(sample, usecols=(2, 3), unpack=True).T
-    charges, move = numpy.loadtxt(sample, usecols=(4, 5), unpack=True)
+    velocities = numpy.loadtxt(sample, usecols=(2, 3, 4), unpack=True).T
+    charges, move = numpy.loadtxt(sample, usecols=(5, 6), unpack=True)
+    QoverM = numpy.sign(charges)
 
     # folders = ("/phase_space", "/field")
     # for i in range(len(folders)):
     #     os.system("mkdir -p results{}".format(folders[i]))
     NGx = 256
     NGy = 1
-    steps = 1000
+    steps = 1
     Lx = 4 * numpy.pi
     Ly = 1.0
     dx = Lx / NGx
     dy = Ly / NGy
     dt = 0.1
     n = 1
-
+    Bext = numpy.array([0.0, 0.0, 0.0])
 
     NP = len(positions)
     move_indexes, = numpy.where(move == 1)
+
     for step in tqdm(range(steps)):
         
         # in case that initial velocites in y are zero, the following test must pass 
@@ -41,19 +42,19 @@ def main(sample):
         nxtX = (currentNodesX + 1) % NGx
         nxtY = (currentNodesY + 1) % NGy
 
-        rho = density(NP, NGx, NGy, dx, dy, charges, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY)
-        phi = potential(NGx, NGy, dx, dy, rho)
-        E_n = field_n(NGx, NGy, dx, dy, phi)
-        E_p = field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes)
+        rho = cycle.density(NP, NGx, NGy, dx, dy, charges, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY)
+        phi = cycle.potential(NGx, NGy, dx, dy, rho)
+        E_n = cycle.field_n(NGx, NGy, dx, dy, phi)
+        E_p = cycle.field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes)
 
         if step == 0:
-            outphase(-1.0, velocities, charges, E_p, dt)
+            cycle.outphase(-1.0, velocities, QoverM, E_p, Bext, dt, move_indexes)
 
-        update(positions, velocities, charges, E_p, dt, Lx, Ly)
+        cycle.update(positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes)
 
         final_velocities = numpy.copy(velocities)
 
-        outphase(1.0, final_velocities, charges, E_p, dt)
+        cycle.outphase(1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
 
         # Write data
         # if step % 10 == 0:
@@ -67,8 +68,8 @@ def main(sample):
         #     phase_space.close()
         #     Efield.close()
 
-    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
-    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
+    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test_one_step.txt", unpack=True)
+    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test_one_step.txt", unpack=True)
 
     # for i in range(NP):
     #     print(pos_test[i], positions[:, 0][i], pos_test[i] == positions[:, 0][i])
@@ -81,8 +82,8 @@ def main(sample):
     assert(numpy.allclose(vel_test, velocities[:, 0]))
     assert(numpy.allclose(rho_test, rho[:, 0]))
     assert(numpy.allclose(phi_test, phi[:, 0]))
-    assert(numpy.allclose(E_n_test, E_n[0, :, 0]))
-    assert(numpy.allclose(E_p_test, E_p[0, :]))
+    assert(numpy.allclose(E_n_test, E_n[:, 0, 0]))
+    assert(numpy.allclose(E_p_test, E_p[:, 0]))
 
 if __name__ == '__main__':
     main()
