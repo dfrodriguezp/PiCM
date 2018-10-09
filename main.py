@@ -23,15 +23,16 @@ def main(sample):
     dx = Lx / NGx
     dy = Ly / NGy
     dt = 0.1
-    n = 1
-    Bext = numpy.array([0.0, 0.0, 0.0])
-
     NP = len(positions)
     move_indexes, = numpy.where(move == 1)
 
-    a = numpy.array([0.5 * QoverM[i] * Bext * dt for i in move_indexes])
-    a_2 = numpy.array([numpy.linalg.norm(a[i]) * numpy.linalg.norm(a[i]) for i in move_indexes])
-    b = numpy.array([(2 * a[i]) / (1 + a_2[i]) for i in move_indexes])
+    Bext = numpy.array([[0.0, 0.0, 0.0]] * len(move_indexes))
+
+    # Auxiliary vectors for Boris algorithm
+    a = 0.5 * QoverM[move_indexes, numpy.newaxis] * Bext * dt
+    a_2 = numpy.linalg.norm(a, axis=1) * numpy.linalg.norm(a, axis=1)
+    b = (2 * a) / (1 + a_2[:, numpy.newaxis])
+
     for step in tqdm(range(steps)):
         
         # in case that initial velocites in y are zero, the following test must pass 

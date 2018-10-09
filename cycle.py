@@ -55,16 +55,15 @@ def field_n(NGx, NGy, dx, dy, phi):
 def field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes):
     E = numpy.zeros(shape=(NP, 3))
 
-    for i in move_indexes:
-        A = (dx - hx[i]) * (dy - hy[i])
-        B = (dx - hx[i]) * hy[i]
-        C = hx[i] * (dy - hy[i])
-        D = hx[i] * hy[i]
-        
-        E[i, :] += E_n[currentNodesX[i], currentNodesY[i], :] * A \
-                 + E_n[currentNodesX[i], nxtY[i], :] * B \
-                 + E_n[nxtX[i], currentNodesY[i], :] * C \
-                 + E_n[nxtX[i], nxtY[i], :] * D
+    A = (dx - hx[move_indexes]) * (dy - hy[move_indexes])
+    B = (dx - hx[move_indexes]) * hy[move_indexes]
+    C = hx[move_indexes] * (dy - hy[move_indexes])
+    D = hx[move_indexes] * hy[move_indexes]
+    
+    E[move_indexes, :] += E_n[currentNodesX[move_indexes], currentNodesY[move_indexes], :] * A[:, numpy.newaxis] \
+                        + E_n[currentNodesX[move_indexes], nxtY[move_indexes], :] * B[:, numpy.newaxis] \
+                        + E_n[nxtX[move_indexes], currentNodesY[move_indexes], :] * C[:, numpy.newaxis] \
+                        + E_n[nxtX[move_indexes], nxtY[move_indexes], :] * D[:, numpy.newaxis]
 
     E /= (dx * dy)
 
