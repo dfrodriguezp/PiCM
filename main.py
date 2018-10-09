@@ -2,11 +2,12 @@ import cycle
 import numpy
 from tqdm import tqdm
 import os
-import click
+# import click
 
-@click.command()
-@click.option("-sample", default="state.dat")
-def main(sample):
+# @click.command()
+# @click.option("-sample", default="state.dat")
+def main():
+    sample = "state.dat"
     positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True).T
     velocities = numpy.loadtxt(sample, usecols=(2, 3, 4), unpack=True).T
     charges, move = numpy.loadtxt(sample, usecols=(5, 6), unpack=True)
@@ -28,10 +29,16 @@ def main(sample):
 
     Bext = numpy.array([[0.0, 0.0, 0.0]] * len(move_indexes))
 
-    # Auxiliary vectors for Boris algorithm
-    a = 0.5 * QoverM[move_indexes, numpy.newaxis] * Bext * dt
-    a_2 = numpy.linalg.norm(a, axis=1) * numpy.linalg.norm(a, axis=1)
-    b = (2 * a) / (1 + a_2[:, numpy.newaxis])
+
+    '''
+    Auxiliary vectors for Boris algorithm v1 and v2
+    
+    v1 is usually named t and v2 is isually named s, but I don't want t
+    to be confused with time.
+    '''
+    v1 = 0.5 * QoverM[move_indexes, numpy.newaxis] * Bext * dt
+    v1_2 = numpy.linalg.norm(v1, axis=1) * numpy.linalg.norm(v1, axis=1) # Magnitude of v1 squared
+    v2 = (2 * v1) / (1 + v1_2[:, numpy.newaxis])
 
     for step in tqdm(range(steps)):
         
@@ -40,25 +47,28 @@ def main(sample):
         
         currentNodesX = numpy.array(positions[:, 0] / dx, dtype=int)
         currentNodesY = numpy.array(positions[:, 1] / dy, dtype=int)
+        currentX_currentY = currentNodesX + currentNodesY * NGx
 
         hx = positions[:, 0] - (currentNodesX * dx)
         hy = positions[:, 1] - (currentNodesY * dy)
         nxtX = (currentNodesX + 1) % NGx
         nxtY = (currentNodesY + 1) % NGy
 
-        rho = cycle.density(NP, NGx, NGy, dx, dy, charges, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY)
+        indexesInNode = numpy.array([numpy.where(currentX_currentY == node)[0] for node in range(NGx * NGy)])
+
+        rho = cycle.density(NGx, NGy, dx, dy, hx, hy, currentNodesX, currentNodesY, nxtX, nxtY, indexesInNode, charges)
         phi = cycle.potential(NGx, NGy, dx, dy, rho)
         E_n = cycle.field_n(NGx, NGy, dx, dy, phi)
         E_p = cycle.field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes)
 
         if step == 0:
-            cycle.outphase(a, b, -1.0, velocities, QoverM, E_p, Bext, dt, move_indexes)
+            cycle.outphase(v1, v2, -1.0, velocities, QoverM, E_p, Bext, dt, move_indexes)
 
-        cycle.update(a, b, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes)
+        cycle.update(v1, v2, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes)
 
         final_velocities = numpy.copy(velocities)
 
-        cycle.outphase(a, b, 1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
+        cycle.outphase(v1, v2, 1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
 
         # Write data
         # if step % 10 == 0:
@@ -78,16 +88,17 @@ def main(sample):
     # for i in range(NP):
     #     print(pos_test[i], positions[:, 0][i], pos_test[i] == positions[:, 0][i])
 
-    # print(E_p_test.shape, E_p.shape)
-    # print(rho.shape)
-    # for i in range(NGx):
-    #     print(rho_test[i], rho[i][0], rho_test[i] == rho[i][0])
+    # # print(E_p_test.shape, E_p.shape)
+    # # print(rho.shape)
+    # # for i in range(NGx):
+    # #     print(rho_test[i], rho[i][0], rho_test[i] == rho[i][0])
     assert(numpy.allclose(pos_test, positions[:, 0]))
     assert(numpy.allclose(vel_test, velocities[:, 0]))
     assert(numpy.allclose(rho_test, rho[:, 0]))
     assert(numpy.allclose(phi_test, phi[:, 0]))
     assert(numpy.allclose(E_n_test, E_n[:, 0, 0]))
     assert(numpy.allclose(E_p_test, E_p[:, 0]))
+
 
 if __name__ == '__main__':
     main()
