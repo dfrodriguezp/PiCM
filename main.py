@@ -17,7 +17,7 @@ def main(sample):
     #     os.system("mkdir -p results{}".format(folders[i]))
     NGx = 256
     NGy = 1
-    steps = 1
+    steps = 1000
     Lx = 4 * numpy.pi
     Ly = 1.0
     dx = Lx / NGx
@@ -29,6 +29,9 @@ def main(sample):
     NP = len(positions)
     move_indexes, = numpy.where(move == 1)
 
+    a = numpy.array([0.5 * QoverM[i] * Bext * dt for i in move_indexes])
+    a_2 = numpy.array([numpy.linalg.norm(a[i]) * numpy.linalg.norm(a[i]) for i in move_indexes])
+    b = numpy.array([(2 * a[i]) / (1 + a_2[i]) for i in move_indexes])
     for step in tqdm(range(steps)):
         
         # in case that initial velocites in y are zero, the following test must pass 
@@ -48,13 +51,13 @@ def main(sample):
         E_p = cycle.field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes)
 
         if step == 0:
-            cycle.outphase(-1.0, velocities, QoverM, E_p, Bext, dt, move_indexes)
+            cycle.outphase(a, b, -1.0, velocities, QoverM, E_p, Bext, dt, move_indexes)
 
-        cycle.update(positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes)
+        cycle.update(a, b, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes)
 
         final_velocities = numpy.copy(velocities)
 
-        cycle.outphase(1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
+        cycle.outphase(a, b, 1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
 
         # Write data
         # if step % 10 == 0:
@@ -68,8 +71,8 @@ def main(sample):
         #     phase_space.close()
         #     Efield.close()
 
-    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test_one_step.txt", unpack=True)
-    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test_one_step.txt", unpack=True)
+    rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
+    pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
 
     # for i in range(NP):
     #     print(pos_test[i], positions[:, 0][i], pos_test[i] == positions[:, 0][i])

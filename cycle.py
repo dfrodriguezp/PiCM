@@ -70,18 +70,14 @@ def field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, m
 
     return E
 
-def boris(velocities, QoverM, E_p, Bext, dt, move_indexes):
-    for i in move_indexes:
-        a = 0.5 * QoverM[i] * Bext * dt
-        a_2 = numpy.linalg.norm(a) * numpy.linalg.norm(a)
-        b = (2 * a) / (1 + a_2)
-        v_minus = velocities[i] + 0.5 * QoverM[i] * E_p[i] * dt
-        v_prime = v_minus + numpy.cross(v_minus, a)
-        v_plus = v_minus + numpy.cross(v_prime, b)
-        velocities[i] = v_plus + 0.5 * QoverM[i] * E_p[i] * dt
+def boris(a, b, velocities, QoverM, E_p, Bext, dt, move_indexes):
+    v_minus = velocities[move_indexes] + 0.5 * QoverM[move_indexes, numpy.newaxis] * E_p[move_indexes] * dt
+    v_prime = v_minus + numpy.cross(v_minus, a)
+    v_plus = v_minus + numpy.cross(v_prime, b)
+    velocities[move_indexes] = v_plus + 0.5 * QoverM[move_indexes, numpy.newaxis] * E_p[move_indexes] * dt
 
-def update(positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes):
-    boris(velocities, QoverM, E_p, Bext, dt, move_indexes)
+def update(a, b, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes):
+    boris(a, b, velocities, QoverM, E_p, Bext, dt, move_indexes)
     positions += velocities[:, (0, 1)] * dt
 
     positions[:, 0] %= Lx
@@ -90,6 +86,6 @@ def update(positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes):
     assert(numpy.all(positions[:, 0] < Lx))
     assert(numpy.all(positions[:, 1] < Ly))
 
-def outphase(direction, velocities, QoverM, E_p, Bext, dt, move_indexes):
+def outphase(a, b, direction, velocities, QoverM, E_p, Bext, dt, move_indexes):
     dT = 0.5 * direction * dt
-    boris(velocities, QoverM, E_p, Bext, dT, move_indexes)
+    boris(a, b, velocities, QoverM, E_p, Bext, dT, move_indexes)
