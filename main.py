@@ -23,7 +23,7 @@ def main(jsonfile):
 
     results = root.get("results", [])
     samplefile = root.get("sample", None)
-    outputName = root.get("output", "output")
+    outputName = root.get("output", "results")
 
     if not samplefile:
         print("ERROR! Sample file not found in JSON file.")
@@ -95,7 +95,11 @@ def main(jsonfile):
     v1_2 = numpy.linalg.norm(v1, axis=1) * numpy.linalg.norm(v1, axis=1) # Magnitude of v1 squared
     v2 = (2 * v1) / (1 + v1_2[:, numpy.newaxis])
 
-    for step in tqdm(range(steps)):        
+    energy = open("{}/energy/energy_seed_{}_.dat".format(outputName, seed))
+
+    print("Simulations running...\n")
+    for step in tqdm(range(steps)):
+        writeStep = (step % ss_freq == 0)
         currentNodesX = numpy.array(positions[:, 0] / dx, dtype=int)
         currentNodesY = numpy.array(positions[:, 1] / dy, dtype=int)
         currentX_currentY = currentNodesX + currentNodesY * NGx
@@ -121,18 +125,53 @@ def main(jsonfile):
 
         cycle.outphase(v1, v2, 1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
 
-        # Write data
-        if step % 10 == 0:
-            phase_space = open("results/phase_space/step_{}.dat".format(step), "w")
-            Efield = open("results/field/step_{}.dat".format(step), "w")
-            for i in range(NG):
-                Efield.write("{} {}\n".format(i*dx, E_n[i]))
-            for p in range(NP):
-                if final_parts[p].move:
-                    phase_space.write("{} {}\n".format(final_parts[p].pos, final_parts[p].vel))
-            phase_space.close()
-            Efield.close()
+        if (writePhaseSpace and writeStep):
+            phaseSpace = open("{}/phase_space/step_{}_seed_{}_.dat".format(outputName, step, seed))
+            phaseSpace.write("# x y vx vy vz")
+        if (writeEfield and writeStep):
+            electricField = open("{}/Efield/step_{}_seed_{}_.dat".format(outputName, step, seed))
+            electricField.write("# x y Ex Ey")
+        if (writePhi and writeStep):
+            electricPotential = open("{}/phi/step_{}_seed_{}_.dat".format(outputName, step, seed))
+            electricPotential.write("# x y phi")
+        if (writeRho and writeStep):
+            chargeDensity = open("{}/rho/step_{}_seed_{}_.dat".format(outputName, step, seed))
+            chargeDensity.write("# x y rho")
 
+        KE = 0.0
+        FE = 0.0
+
+        for p in move_indexes:
+            if (writePhaseSpace and writeStep):
+                phaseSpace.write("{} {} {} {} {}\n".format(*positions[p], *final_velocities[p]))
+
+            KE += masses[p] * numpy.linalg.norm(final_velocities[p]) * numpy.linalg.norm(final_velocities[p])
+
+        KE *= 0.5
+
+        for i in range(NGx):
+            for j in range(NGy):
+                if (writeEfield and writeStep):
+                    electricField.write("{} {} {} {}\n".format(i * dx, j * dy, E_n[i][j][0], E_n[i][j][1]))
+                if (writePhi and writeStep):
+                    electricPotential.write("{} {} {}\n".format(i * dx, j * dy, phi[i][j]))
+                if (writeRho and writeStep):
+                    chargeDensity.write("{} {} {} {}\n".format(i * dx, j * dy, rho[i][j]))
+
+                FE += rho[i][j] * phi[i][j]
+
+        FE *= 0.5
+
+        energy.write("{} {} {}\n".format(step, KE, FE))
+        
+        if (writePhaseSpace and writeStep): phaseSpace.close()
+        if (writeEfield and writeStep): electricField.close()
+        if (writePhi and writeStep): electricPotential.close()
+        if (writeRho and writeStep): chargeDensity.close()
+
+    energy.close()
+
+    print("\nSimulation finished!\n")
     # rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
     # pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
 
