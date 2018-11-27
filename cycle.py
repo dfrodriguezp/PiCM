@@ -96,3 +96,4 @@ def update(v1, v2, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_in
 def outphase(v1, v2, direction, velocities, QoverM, E_p, Bext, dt, move_indexes):
     dT = 0.5 * direction * dt
     boris(v1, v2, velocities, QoverM, E_p, Bext, dT, move_indexes)
+
