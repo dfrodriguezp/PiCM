@@ -12,10 +12,10 @@ def density(positions, charges, dx, dy, Nx, Ny, N):
         nxt_i = (i + 1) % Nx
         nxt_j = (j + 1) % Ny
 
-        rho[i][j] += charges[p] * (dx - hx) * (dy - hy)
-        rho[i][nxt_j] += charges[p] * (dx - hx) * hy
-        rho[nxt_i][j] += charges[p] * hx * (dy - hy)
-        rho[nxt_i][nxt_j] += charges[p] * hx * hy
+        rho[i, j] += charges[p] * (dx - hx) * (dy - hy)
+        rho[i, nxt_j] += charges[p] * (dx - hx) * hy
+        rho[nxt_i, j] += charges[p] * hx * (dy - hy)
+        rho[nxt_i, nxt_j] += charges[p] * hx * hy
 
     rho /= (dx * dy * dx * dy)
 
@@ -64,18 +64,25 @@ def fieldNodes(phi, dx, dy, Nx, Ny):
     return E
 
 
-def field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes):
-    E = numpy.zeros(shape=(NP, 3))
+def fieldParticles(field, positions, moves, dx, dy, Nx, Ny, N):
+    E = numpy.zeros(shape=(N, 3))
 
-    A = (dx - hx[move_indexes]) * (dy - hy[move_indexes])
-    B = (dx - hx[move_indexes]) * hy[move_indexes]
-    C = hx[move_indexes] * (dy - hy[move_indexes])
-    D = hx[move_indexes] * hy[move_indexes]
+    for p in range(N):
+        if moves[p]:
+            i = int(positions[p][0] / dx)
+            j = int(positions[p][1] / dy)
+            hx = positions[p][0] - (i * dx)
+            hy = positions[p][1] - (i * dy)
+            nxt_i = (i + 1) % Nx
+            nxt_j = (j + 1) % Ny
 
-    E[move_indexes, :] += E_n[currentNodesX[move_indexes], currentNodesY[move_indexes], :] * A[:, numpy.newaxis] \
-                        + E_n[currentNodesX[move_indexes], nxtY[move_indexes], :] * B[:, numpy.newaxis] \
-                        + E_n[nxtX[move_indexes], currentNodesY[move_indexes], :] * C[:, numpy.newaxis] \
-                        + E_n[nxtX[move_indexes], nxtY[move_indexes], :] * D[:, numpy.newaxis]
+            A = (dx - hx) * (dy - hy)
+            B = (dx - hx) * hy
+            C = hx * (dy - hy)
+            D = hx * hy
+
+            E[p][0] = field[i][j][0] * A + field[i][nxt_j][0] * B + field[nxt_i][j][0] * C + field[nxt_i][nxt_j][0] * D;
+            E[p][1] = field[i][j][1] * A + field[i][nxt_j][1] * B + field[nxt_i][j][1] * C + field[nxt_i][nxt_j][1] * D;
 
     E /= (dx * dy)
 
