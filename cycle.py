@@ -103,7 +103,7 @@ def boris(velocities, QoverM, moves, E, B, dt, N):
 
 def update(positions, velocities, QoverM, moves, E, B, Lx, Ly, dt, N):
     boris(velocities, QoverM, moves, E, B, dt, N)
-    
+
     positions += velocities[:, (0, 1)] * dt
 
     positions[:, 0] %= Lx
@@ -113,7 +113,7 @@ def update(positions, velocities, QoverM, moves, E, B, Lx, Ly, dt, N):
     assert(numpy.all(positions[:, 1] < Ly))
 
 
-def outphase(v1, v2, direction, velocities, QoverM, E_p, Bext, dt, move_indexes):
+def outphase(direction, velocities, QoverM, moves, E, B, dt, N):
     dT = 0.5 * direction * dt
-    boris(v1, v2, velocities, QoverM, E_p, Bext, dT, move_indexes)
+    boris(velocities, QoverM, moves, E, B, dT, N)
 
