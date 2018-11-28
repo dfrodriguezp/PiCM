@@ -10,7 +10,7 @@ import sys
 @click.argument("jsonfile")
 def main(jsonfile):
     if not os.path.isfile(jsonfile):
-        print("ERROR! Please include a parameters JSON file.")
+        print("ERROR! JSON file not found.")
         sys.exit()
 
     with open(jsonfile, "r") as json_input:
@@ -46,8 +46,8 @@ def main(jsonfile):
     dy = root.get("dy", 1.0)
 
 
-    NP = root.get("N", None)
-    if not NP:
+    N = root.get("N", None)
+    if not N:
         print("ERROR! Number of particles \"N\" not found in JSON file.")
         sys.exit()
 
@@ -61,19 +61,18 @@ def main(jsonfile):
         print("ERROR! Grid size must have two components!")
         sys.exit()
     
-    NGx, NGy = gridSize 
-    Lx = dx * NGx
-    Ly = dy * NGy
+    Nx, Ny = gridSize 
+    Lx = dx * Nx
+    Ly = dy * Ny
 
     sample = root["sample"]
     positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True).T
     velocities = numpy.loadtxt(sample, usecols=(2, 3, 4), unpack=True).T
     QoverM, moves = numpy.loadtxt(sample, usecols=(5, 6), unpack=True)
-    charges = Lx * Ly * QoverM / NP
+    charges = Lx * Ly * QoverM / N
     masses = charges / QoverM
 
     move_indexes, = numpy.where(moves == 1)
-    Bext = numpy.full((len(move_indexes), 3), Bext)
 
     folders = ["/energy"]
     if writePhaseSpace: folders.append("/phase_space")
@@ -84,46 +83,22 @@ def main(jsonfile):
     for f in folders:
         os.system("mkdir -p {}".format(outputName + f))
 
-    '''
-    Auxiliary vectors for Boris algorithm v1 and v2
-    
-    v1 is usually named t and v2 is isually named s, but I don't want t
-    to be confused with time.
-    '''
-
-    v1 = 0.5 * QoverM[move_indexes, numpy.newaxis] * Bext * dt
-    v1_2 = numpy.linalg.norm(v1, axis=1) * numpy.linalg.norm(v1, axis=1) # Magnitude of v1 squared
-    v2 = (2 * v1) / (1 + v1_2[:, numpy.newaxis])
-
     energy = open("{}/energy/energy_seed_{}_.dat".format(outputName, seed))
 
     print("Simulations running...\n")
     for step in tqdm(range(steps)):
         writeStep = (step % ss_freq == 0)
-        currentNodesX = numpy.array(positions[:, 0] / dx, dtype=int)
-        currentNodesY = numpy.array(positions[:, 1] / dy, dtype=int)
-        currentX_currentY = currentNodesX + currentNodesY * NGx
-
-        hx = positions[:, 0] - (currentNodesX * dx)
-        hy = positions[:, 1] - (currentNodesY * dy)
-        nxtX = (currentNodesX + 1) % NGx
-        nxtY = (currentNodesY + 1) % NGy
-
-        indexesInNode = numpy.array([numpy.where(currentX_currentY == node)[0] for node in range(NGx * NGy)])
-
-        rho = cycle.density(NGx, NGy, dx, dy, hx, hy, currentNodesX, currentNodesY, nxtX, nxtY, indexesInNode, charges)
-        phi = cycle.potential(NGx, NGy, dx, dy, rho)
-        E_n = cycle.field_n(NGx, NGy, dx, dy, phi)
-        E_p = cycle.field_p(NP, dx, dy, E_n, currentNodesX, currentNodesY, hx, hy, nxtX, nxtY, move_indexes)
+        RHO = cycle.density(positions, charges, dx, dy, Nx, Ny, N)
+        PHI = cycle.potential(RHO, dx, dy, Nx, Ny)
+        EFIELDn = cycle.fieldNodes(PHI, dx, dy, Nx, Ny)
+        EFIELDp = cycle.fieldParticles(EFIELDn, positions, move_indexes, dx, dy, Nx, Ny, N)
 
         if step == 0:
-            cycle.outphase(v1, v2, -1.0, velocities, QoverM, E_p, Bext, dt, move_indexes)
+            cycle.outphase(-1.0, velocities, QoverM, move_indexes, EFIELDp, Bext, dt, N)
 
-        cycle.update(v1, v2, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes)
-
-        final_velocities = numpy.copy(velocities)
-
-        cycle.outphase(v1, v2, 1.0, final_velocities, QoverM, E_p, Bext, dt, move_indexes)
+        cycle.update(positions, velocities, QoverM, move_indexes, EFIELDp, Bext, Lx, Ly, dt, N)
+        new_velocities = numpy.copy(velocities)
+        cycle.outphase(1.0, new_velocities, QoverM, move_indexes, EFIELDp, Bext, dt, N)
 
         if (writePhaseSpace and writeStep):
             phaseSpace = open("{}/phase_space/step_{}_seed_{}_.dat".format(outputName, step, seed))
@@ -143,22 +118,22 @@ def main(jsonfile):
 
         for p in move_indexes:
             if (writePhaseSpace and writeStep):
-                phaseSpace.write("{} {} {} {} {}\n".format(*positions[p], *final_velocities[p]))
+                phaseSpace.write("{} {} {} {} {}\n".format(*positions[p], *new_velocities[p]))
 
-            KE += masses[p] * numpy.linalg.norm(final_velocities[p]) * numpy.linalg.norm(final_velocities[p])
+            KE += masses[p] * numpy.linalg.norm(new_velocities[p]) * numpy.linalg.norm(new_velocities[p])
 
         KE *= 0.5
 
-        for i in range(NGx):
-            for j in range(NGy):
+        for i in range(Nx):
+            for j in range(Ny):
                 if (writeEfield and writeStep):
-                    electricField.write("{} {} {} {}\n".format(i * dx, j * dy, E_n[i][j][0], E_n[i][j][1]))
+                    electricField.write("{} {} {} {}\n".format(i * dx, j * dy, EFIELDn[i][j][0], EFIELDn[i][j][1]))
                 if (writePhi and writeStep):
-                    electricPotential.write("{} {} {}\n".format(i * dx, j * dy, phi[i][j]))
+                    electricPotential.write("{} {} {}\n".format(i * dx, j * dy, PHI[i][j]))
                 if (writeRho and writeStep):
-                    chargeDensity.write("{} {} {} {}\n".format(i * dx, j * dy, rho[i][j]))
+                    chargeDensity.write("{} {} {} {}\n".format(i * dx, j * dy, RHO[i][j]))
 
-                FE += rho[i][j] * phi[i][j]
+                FE += RHO[i][j] * PHI[i][j]
 
         FE *= 0.5
 
@@ -172,22 +147,13 @@ def main(jsonfile):
     energy.close()
 
     print("\nSimulation finished!\n")
-    # rho_test, phi_test, E_n_test = numpy.loadtxt("test/grid_test.txt", unpack=True)
-    # pos_test, vel_test, E_p_test = numpy.loadtxt("test/particles_test.txt", unpack=True)
 
-    # for i in range(NP):
-    #     print(pos_test[i], positions[:, 0][i], pos_test[i] == positions[:, 0][i])
-
-    # print(E_p_test.shape, E_p.shape)
-    # print(rho.shape)
-    # for i in range(NGx):
-    #     print(rho_test[i], rho[i][0], rho_test[i] == rho[i][0])
-    assert(numpy.allclose(pos_test, positions[:, 0]))
-    assert(numpy.allclose(vel_test, velocities[:, 0]))
-    assert(numpy.allclose(rho_test, rho[:, 0]))
-    assert(numpy.allclose(phi_test, phi[:, 0]))
-    assert(numpy.allclose(E_n_test, E_n[:, 0, 0]))
-    assert(numpy.allclose(E_p_test, E_p[:, 0]))
+    # assert(numpy.allclose(pos_test, positions[:, 0]))
+    # assert(numpy.allclose(vel_test, velocities[:, 0]))
+    # assert(numpy.allclose(rho_test, RHO[:, 0]))
+    # assert(numpy.allclose(phi_test, PHI[:, 0]))
+    # assert(numpy.allclose(E_n_test, EFIELDn[:, 0, 0]))
+    # assert(numpy.allclose(E_p_test, E_p[:, 0]))
 
 
 if __name__ == '__main__':
