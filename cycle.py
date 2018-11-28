@@ -2,7 +2,7 @@ import numpy
 
 
 def density(positions, charges, dx, dy, Nx, Ny, N):
-    rho = numpy.zeros(shape=(NGx, NGy))
+    rho = numpy.zeros(shape=(Nx, Ny))
 
     for p in range(N):
         i = int(positions[p][0] / dx)
@@ -45,19 +45,19 @@ def potential(rho, dx, dy, Nx, Ny):
     return phi
 
 
-def field_n(NGx, NGy, dx, dy, phi):
-    E = numpy.zeros(shape=(NGx, NGy, 3))
-    for j in range(NGy):
-        for i in range(NGx):
-            nxt_i = (i + 1) % NGx
-            prv_i = (i - 1) % NGx
+def fieldNodes(phi, dx, dy, Nx, Ny):
+    E = numpy.zeros(shape=(Nx, Ny, 3))
+    for j in range(Ny):
+        for i in range(Nx):
+            nxt_i = (i + 1) % Nx
+            prv_i = (i - 1) % Nx
 
             E[i, j, 0] = (phi[prv_i, j] - phi[nxt_i, j]) / (dx * 2)
 
-    for i in range(NGx):
-        for j in range(NGy):
-            nxt_j = (j + 1) % NGy
-            prv_j = (j - 1) % NGy
+    for i in range(Nx):
+        for j in range(Ny):
+            nxt_j = (j + 1) % Ny
+            prv_j = (j - 1) % Ny
 
             E[i, j, 1] = (phi[i, prv_j] - phi[i, nxt_j]) / (dy * 2)
 
