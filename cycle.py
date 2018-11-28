@@ -89,11 +89,16 @@ def fieldParticles(field, positions, moves, dx, dy, Nx, Ny, N):
     return E
 
 
-def boris(v1, v2, velocities, QoverM, E_p, Bext, dt, move_indexes):
-    v_minus = velocities[move_indexes] + 0.5 * QoverM[move_indexes, numpy.newaxis] * E_p[move_indexes] * dt
-    v_prime = v_minus + numpy.cross(v_minus, v1)
-    v_plus = v_minus + numpy.cross(v_prime, v2)
-    velocities[move_indexes] = v_plus + 0.5 * QoverM[move_indexes, numpy.newaxis] * E_p[move_indexes] * dt
+def boris(velocities, QoverM, moves, E, B, dt, N):
+    for p in range(N):
+        if moves[p]:
+            v1 = 0.5 * QoverM[p] * B * dt
+            v1_2 = numpy.linalg.norm(v1) * numpy.linalg.norm(v1)
+            v2 = (2.0 * v1) / (1.0 + v1_2)
+            v_minus = velocities[p] + 0.5 * QoverM[p] * E[p] * dt
+            v_prime = v_minus + numpy.cross(v_minus, v1) 
+            v_plus = v_minus + numpy.cross(v_prime, v2)
+            velocities[p] = v_plus + 0.5 * QoverM[p] * E[p] * dt
 
 
 def update(v1, v2, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes):
