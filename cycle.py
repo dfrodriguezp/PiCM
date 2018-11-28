@@ -1,14 +1,21 @@
 import numpy
 
-def density(NGx, NGy, dx, dy, hx, hy, currentNodesX, currentNodesY, nxtX, nxtY, indexesInNode, charges):
+
+def density(positions, charges, dx, dy, Nx, Ny, N):
     rho = numpy.zeros(shape=(NGx, NGy))
 
-    for node in range(NGx * NGy):
-        i = indexesInNode[node]
-        rho[currentNodesX[i], currentNodesY[i]] += numpy.sum(charges[i] * (dx - hx[i]) * (dy - hy[i]))
-        rho[currentNodesX[i], nxtY[i]] += numpy.sum(charges[i] * (dx - hx[i]) * hy[i])
-        rho[nxtX[i], currentNodesY[i]] += numpy.sum(charges[i] * hx[i] * (dy - hy[i]))
-        rho[nxtX[i], nxtY[i]] += numpy.sum(charges[i] * hx[i] * hy[i])
+    for p in range(N):
+        i = int(positions[p][0] / dx)
+        j = int(positions[p][1] / dy)
+        hx = positions[p][0] - (i * dx)
+        hy = positions[p][1] - (i * dy)
+        nxt_i = (i + 1) % Nx
+        nxt_j = (j + 1) % Ny
+
+        rho[i][j] += charges[p] * (dx - hx) * (dy - hy)
+        rho[i][nxt_j] += charges[p] * (dx - hx) * hy
+        rho[nxt_i][j] += charges[p] * hx * (dy - hy)
+        rho[nxt_i][nxt_j] += charges[p] * hx * hy
 
     rho /= (dx * dy * dx * dy)
 
