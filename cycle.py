@@ -22,17 +22,17 @@ def density(positions, charges, dx, dy, Nx, Ny, N):
     return rho
 
 
-def potential(NGx, NGy, dx, dy, rho):
+def potential(rho, dx, dy, Nx, Ny):
     rho_k = numpy.fft.fftn(rho)
-    Wx = numpy.exp(2 * 1j * numpy.pi / NGx)
-    Wy = numpy.exp(2 * 1j * numpy.pi / NGy)
+    Wx = numpy.exp(2 * 1j * numpy.pi / Nx)
+    Wy = numpy.exp(2 * 1j * numpy.pi / Ny)
     Wn = 1.0 + 0.0j
     Wm = 1.0 + 0.0j
     dx_2 = dx * dx
     dy_2 = dy * dy
 
-    for n in range(NGx):
-        for m in range(NGy):
+    for n in range(Nx):
+        for m in range(Ny):
             denom = dy_2 * (2 - Wn - 1.0/Wn) + dx_2 * (2 - Wm - 1.0/Wm)
             if denom != 0:
                 rho_k[n, m] *= dx_2 * dy_2 / denom
