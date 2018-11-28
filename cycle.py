@@ -101,8 +101,9 @@ def boris(velocities, QoverM, moves, E, B, dt, N):
             velocities[p] = v_plus + 0.5 * QoverM[p] * E[p] * dt
 
 
-def update(v1, v2, positions, velocities, QoverM, E_p, Bext, dt, Lx, Ly, move_indexes):
-    boris(v1, v2, velocities, QoverM, E_p, Bext, dt, move_indexes)
+def update(positions, velocities, QoverM, moves, E, B, Lx, Ly, dt, N):
+    boris(velocities, QoverM, moves, E, B, dt, N)
+    
     positions += velocities[:, (0, 1)] * dt
 
     positions[:, 0] %= Lx
