@@ -8,7 +8,7 @@ def density(positions, charges, dx, dy, Nx, Ny, N):
         i = int(positions[p][0] / dx)
         j = int(positions[p][1] / dy)
         hx = positions[p][0] - (i * dx)
-        hy = positions[p][1] - (i * dy)
+        hy = positions[p][1] - (j * dy)
         nxt_i = (i + 1) % Nx
         nxt_j = (j + 1) % Ny
 
@@ -71,7 +71,7 @@ def fieldParticles(field, positions, moves, dx, dy, Nx, Ny, N):
         i = int(positions[p][0] / dx)
         j = int(positions[p][1] / dy)
         hx = positions[p][0] - (i * dx)
-        hy = positions[p][1] - (i * dy)
+        hy = positions[p][1] - (j * dy)
         nxt_i = (i + 1) % Nx
         nxt_j = (j + 1) % Ny
 
