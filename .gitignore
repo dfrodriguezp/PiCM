@@ -116,6 +116,4 @@ dmypy.json
 
 
 # results
-results
-results/*
-plots/
+*results/*

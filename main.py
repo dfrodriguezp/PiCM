@@ -82,7 +82,8 @@ def main(jsonfile):
     for f in folders:
         os.system("mkdir -p {}".format(outputName + f))
 
-    energy = open("{}/energy/energy_seed_{}_.dat".format(outputName, seed), "w")
+    energy = open("{}/energy/energy.dat".format(outputName, seed), "w")
+    # energy = open("{}/energy/energy_seed_{}_.dat".format(outputName, seed), "w")
 
     print("Simulations running...\n")
     for step in tqdm(range(steps)):
@@ -100,16 +101,20 @@ def main(jsonfile):
         cycle.outphase(1.0, new_velocities, QoverM, move_indexes, EFIELDp, Bext, dt, N)
 
         if (writePhaseSpace and writeStep):
-            phaseSpace = open("{}/phase_space/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+            phaseSpace = open("{}/phase_space/step_{}_.dat".format(outputName, step, seed), "w")
+            # phaseSpace = open("{}/phase_space/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
             phaseSpace.write("# x y vx vy vz\n\n")
         if (writeEfield and writeStep):
-            electricField = open("{}/Efield/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+            electricField = open("{}/Efield/step_{}_.dat".format(outputName, step, seed), "w")
+            # electricField = open("{}/Efield/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
             electricField.write("# x y Ex Ey\n\n")
         if (writePhi and writeStep):
-            electricPotential = open("{}/phi/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+            electricPotential = open("{}/phi/step_{}_.dat".format(outputName, step, seed), "w")
+            # electricPotential = open("{}/phi/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
             electricPotential.write("# x y phi\n\n")
         if (writeRho and writeStep):
-            chargeDensity = open("{}/rho/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+            chargeDensity = open("{}/rho/step_{}_.dat".format(outputName, step, seed), "w")
+            # chargeDensity = open("{}/rho/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
             chargeDensity.write("# x y rho\n\n")
 
         KE = 0.0
