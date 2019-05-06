@@ -24,7 +24,7 @@ def main(jsonfile):
 
     results = root.get("results", [])
     samplefile = root.get("sample", None)
-    outputName = root.get("output", "results")
+    outputName = root.get("output", "data")
 
     if not samplefile:
         print("ERROR! Sample file not found in JSON file.")
@@ -34,6 +34,8 @@ def main(jsonfile):
         print("ERROR! Sample file not found.")
         sys.exit()
 
+    writeSpace = ("space" in results)
+    writeVelocities = ("velocities" in results)
     writePhaseSpace = ("phase_space" in results)
     writeEfield = ("electric_field" in results)
     writePhi = ("electric_potential" in results)
@@ -41,12 +43,7 @@ def main(jsonfile):
 
     steps = root.get("steps", 50)
     ss_freq = root.get("ss_frequency", 10)
-    seed = root.get("seed", 69696969)
     dt = root.get("dt", 0.1)
-    # dx = root.get("dx", 1.0)
-    # dy = root.get("dy", 1.0)
-    Lx = root.get("Lx", 1.0)
-    Ly = root.get("Ly", 1.0)
 
     NP = root.get("N", None)
     if not NP:
@@ -63,16 +60,46 @@ def main(jsonfile):
         print("ERROR! Grid size must have two components!")
         sys.exit()
 
+    sys_length = root.get("sys_length", [1.0, 1.0])
+    if len(sys_length) != 2:
+        print("ERROR! System length must have two components")
+        sys.exit()
+
+    Lx, Ly = sys_length
     NGx, NGy = gridSize
-    # Lx = dx * NGx
-    # Ly = dy * NGy
+
     dx = Lx / NGx
     dy = Ly / NGy
 
     sample = root["sample"]
-    positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True).T
-    velocities = numpy.loadtxt(sample, usecols=(2, 3, 4), unpack=True).T
-    QoverM, moves = numpy.loadtxt(sample, usecols=(5, 6), unpack=True)
+
+    try:
+        positions = numpy.loadtxt(sample, usecols=(0, 1), unpack=True).T
+    except IndexError as error:
+        print("ERROR! Not enough columns in some row of the sample file")
+        print("Make sure that the file is well written!")
+        sys.exit()
+
+    if len(positions) != NP:
+        print("ERROR! Number of particles in JSON file does not match number of rows in sample file\n")
+        print("In JSON file: " + str(NP) + "\n")
+        print("In sample file: " + str(len(positions)))
+        sys.exit()
+
+    try:
+        velocities = numpy.loadtxt(sample, usecols=(2, 3, 4), unpack=True).T
+    except IndexError as error:
+        print("ERROR! Not enough columns in some row of the sample file")
+        print("Make sure that the file is well written!")
+        sys.exit()
+
+    try:
+        QoverM, moves = numpy.loadtxt(sample, usecols=(5, 6), unpack=True)
+    except IndexError as error:
+        print("ERROR! Not enough columns in some row of the sample file")
+        print("Make sure that the file is well written!")
+        sys.exit()
+
     charges = Lx * Ly * QoverM / NP
     masses = charges / QoverM
 
@@ -80,6 +107,10 @@ def main(jsonfile):
     Bext = numpy.full((len(move_indexes), 3), Bext)
 
     folders = ["/energy"]
+    if writeSpace:
+        folders.append("/space")
+    if writeVelocities:
+        folders.append("/velocities")
     if writePhaseSpace:
         folders.append("/phase_space")
     if writeEfield:
@@ -103,7 +134,7 @@ def main(jsonfile):
     v2 = (2 * v1) / (1 + v1_2[:, numpy.newaxis])
 
     energy = open(
-        "{}/energy/energy_seed_{}_.dat".format(outputName, seed), "w")
+        "{}/energy/energy.dat".format(outputName), "w")
 
     print("Simulation running...\n")
     for step in tqdm(range(steps)):
@@ -129,31 +160,43 @@ def main(jsonfile):
 
         if step == 0:
             cycle.outphase(v1, v2, -1.0, velocities, QoverM,
-                           E_p, Bext, dt, move_indexes)
+                           E_p, dt, move_indexes)
 
         cycle.update(v1, v2, positions, velocities, QoverM,
-                     E_p, Bext, dt, Lx, Ly, move_indexes)
+                     E_p, dt, Lx, Ly, move_indexes)
 
         final_velocities = numpy.copy(velocities)
 
         cycle.outphase(v1, v2, 1.0, final_velocities,
-                       QoverM, E_p, Bext, dt, move_indexes)
+                       QoverM, E_p, dt, move_indexes)
+
+        if (writeSpace and writeStep):
+            space = open("{}/space/step_{}_.dat".format(outputName, step), "w")
+            space.write("# x y\n")
+
+        if (writeVelocities and writeStep):
+            velocities = open(
+                "{}/velocities/step_{}_.dat".format(outputName, step), "w")
+            velocities.write("# vx vy vz\n")
 
         if (writePhaseSpace and writeStep):
             phaseSpace = open(
-                "{}/phase_space/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+                "{}/phase_space/step_{}_.dat".format(outputName, step), "w")
             phaseSpace.write("# x y vx vy vz\n")
+
         if (writeEfield and writeStep):
             electricField = open(
-                "{}/Efield/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+                "{}/Efield/step_{}_.dat".format(outputName, step), "w")
             electricField.write("# x y Ex Ey\n")
+
         if (writePhi and writeStep):
             electricPotential = open(
-                "{}/phi/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+                "{}/phi/step_{}_.dat".format(outputName, step), "w")
             electricPotential.write("# x y phi\n")
+
         if (writeRho and writeStep):
             chargeDensity = open(
-                "{}/rho/step_{}_seed_{}_.dat".format(outputName, step, seed), "w")
+                "{}/rho/step_{}_.dat".format(outputName, step), "w")
             chargeDensity.write("# x y rho\n")
 
         KE = 0.0
@@ -163,6 +206,12 @@ def main(jsonfile):
             if (writePhaseSpace and writeStep):
                 phaseSpace.write("{} {} {} {} {}\n".format(
                     *positions[p], *final_velocities[p]))
+
+            if (writeSpace and writeStep):
+                space.write("{} {}\n".format(*positions[p]))
+
+            if (writeVelocities and writeStep):
+                velocities.write("{} {} {}\n".format(*final_velocities[p]))
 
             KE += masses[p] * numpy.linalg.norm(
                 final_velocities[p]) * numpy.linalg.norm(final_velocities[p])
@@ -189,6 +238,10 @@ def main(jsonfile):
 
         if (writePhaseSpace and writeStep):
             phaseSpace.close()
+        if (writeSpace and writeStep):
+            space.close()
+        if (writeVelocities and writeStep):
+            velocities.close()
         if (writeEfield and writeStep):
             electricField.close()
         if (writePhi and writeStep):
