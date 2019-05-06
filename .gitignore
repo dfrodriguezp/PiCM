@@ -114,6 +114,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+profiler.py
 
 # results
 results
