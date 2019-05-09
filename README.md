@@ -1,6 +1,6 @@
 # PiCM
 
-Software for simulation of the dynamics of charged particles.
+Software for simulation of the dynamics of charged particles with periodic boundary conditions.
 
 ## Requirements
 
