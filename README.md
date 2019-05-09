@@ -27,4 +27,4 @@ conda install numpy tqdm click
 python3 main.py path/to/jsonfile.json
 ```
 
-Of course, you must know how to build said JSON file and what it contains. This is further explined in the Wiki of this repository.
+Of course, you must know how to build that JSON file and what it contains. This is further explined in the [Wiki](https://github.com/dfrodriguezp/PiCM/wiki) of this repository.
