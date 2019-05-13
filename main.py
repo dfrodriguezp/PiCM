@@ -137,6 +137,8 @@ def main(jsonfile):
         "{}/energy/energy.dat".format(outputName), "w")
 
     print("Simulation running...\n")
+    print("Saving data each {} steps.".format(ss_freq))
+
     for step in tqdm(range(steps)):
         writeStep = (step % ss_freq == 0)
         currentNodesX = numpy.array(positions[:, 0] / dx, dtype=int)
@@ -169,15 +171,14 @@ def main(jsonfile):
 
         cycle.outphase(v1, v2, 1.0, final_velocities,
                        QoverM, E_p, dt, move_indexes)
-
         if (writeSpace and writeStep):
             space = open("{}/space/step_{}_.dat".format(outputName, step), "w")
             space.write("# x y\n")
 
         if (writeVelocities and writeStep):
-            velocities = open(
+            vels = open(
                 "{}/velocities/step_{}_.dat".format(outputName, step), "w")
-            velocities.write("# vx vy vz\n")
+            vels.write("# vx vy vz\n")
 
         if (writePhaseSpace and writeStep):
             phaseSpace = open(
@@ -211,7 +212,7 @@ def main(jsonfile):
                 space.write("{} {}\n".format(*positions[p]))
 
             if (writeVelocities and writeStep):
-                velocities.write("{} {} {}\n".format(*final_velocities[p]))
+                vels.write("{} {} {}\n".format(*final_velocities[p]))
 
             KE += masses[p] * numpy.linalg.norm(
                 final_velocities[p]) * numpy.linalg.norm(final_velocities[p])
@@ -241,7 +242,7 @@ def main(jsonfile):
         if (writeSpace and writeStep):
             space.close()
         if (writeVelocities and writeStep):
-            velocities.close()
+            vels.close()
         if (writeEfield and writeStep):
             electricField.close()
         if (writePhi and writeStep):
