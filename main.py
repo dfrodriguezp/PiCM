@@ -4,7 +4,6 @@ from tqdm import tqdm
 import os
 import click
 import json
-import sys
 
 
 @click.command()
@@ -12,7 +11,7 @@ import sys
 def main(jsonfile):
     if not os.path.isfile(jsonfile):
         print("ERROR! Please include a parameters JSON file.")
-        sys.exit()
+        return
 
     with open(jsonfile, "r") as json_input:
         try:
@@ -20,7 +19,7 @@ def main(jsonfile):
         except json.decoder.JSONDecodeError as error:
             print("ERROR! Corrupted JSON file.\n")
             print(error)
-            sys.exit()
+            return
 
     results = root.get("results", [])
     samplefile = root.get("sample", None)
@@ -28,11 +27,11 @@ def main(jsonfile):
 
     if not samplefile:
         print("ERROR! Sample file not found in JSON file.")
-        sys.exit()
+        return
 
     if not os.path.isfile(samplefile):
         print("ERROR! Sample file not found.")
-        sys.exit()
+        return
 
     writeSpace = ("space" in results)
     writeVelocities = ("velocities" in results)
@@ -48,22 +47,22 @@ def main(jsonfile):
     NP = root.get("N", None)
     if not NP:
         print("ERROR! Number of particles \"N\" not found in JSON file.")
-        sys.exit()
+        return
 
     Bext = numpy.array(root.get("Bfield", [0.0, 0.0, 0.0]))
     if len(Bext) != 3:
         print("ERROR! Magnetic field must have three components.")
-        sys.exit()
+        return
 
     gridSize = root.get("grid_size", [16, 16])
     if len(gridSize) != 2:
         print("ERROR! Grid size must have two components!")
-        sys.exit()
+        return
 
     sys_length = root.get("sys_length", [1.0, 1.0])
     if len(sys_length) != 2:
         print("ERROR! System length must have two components")
-        sys.exit()
+        return
 
     Lx, Ly = sys_length
     NGx, NGy = gridSize
@@ -78,27 +77,27 @@ def main(jsonfile):
     except IndexError as error:
         print("ERROR! Not enough columns in some row of the sample file")
         print("Make sure that the file is well written!")
-        sys.exit()
+        return
 
     if len(positions) != NP:
         print("ERROR! Number of particles in JSON file does not match number of rows in sample file\n")
         print("In JSON file: " + str(NP) + "\n")
         print("In sample file: " + str(len(positions)))
-        sys.exit()
+        return
 
     try:
         velocities = numpy.loadtxt(sample, usecols=(2, 3, 4), unpack=True).T
     except IndexError as error:
         print("ERROR! Not enough columns in some row of the sample file")
         print("Make sure that the file is well written!")
-        sys.exit()
+        return
 
     try:
         QoverM, moves = numpy.loadtxt(sample, usecols=(5, 6), unpack=True)
     except IndexError as error:
         print("ERROR! Not enough columns in some row of the sample file")
         print("Make sure that the file is well written!")
-        sys.exit()
+        return
 
     charges = Lx * Ly * QoverM / NP
     masses = charges / QoverM

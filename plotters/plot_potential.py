@@ -1,7 +1,9 @@
+from matplotlib import pyplot
 import numpy
 import json
 import click
-from matplotlib import pyplot
+import matplotlib
+matplotlib.style.use('classic')
 
 
 @click.command()
@@ -36,6 +38,9 @@ def main(jsonfile, step):
     bar = pyplot.colorbar(color_map, ax=pyplot.gca())
     pyplot.xlim(0, Lx - dx)
     pyplot.ylim(0, Ly - dy)
+    pyplot.xlabel("$x$", fontsize=25)
+    pyplot.ylabel("$y$", fontsize=25)
+    bar.set_label("$\phi$", fontsize=25)
     pyplot.gca().set_aspect("equal")
     pyplot.savefig("{}/phi/step_{}_.pdf".format(output, step))
     pyplot.close()
