@@ -26,7 +26,7 @@ def main(jsonfile, step):
         print("ERROR! You want to plot a snapshot that doesn't exist.")
         return
 
-    Etotal = numpy.sqrt(Ex * Ex + Ey * Ey)
+    Etotal = numpy.linalg.norm([Ex, Ey], axis=0)
     Nx, Ny = root["grid_size"]
     Lx, Ly = root["sys_length"]
     dx, dy = Lx / Nx, Ly / Ny
@@ -38,6 +38,7 @@ def main(jsonfile, step):
 
     # x-component
     pyplot.figure()
+    pyplot.title("Step {}".format(step), fontsize=25)
     color_map = pyplot.pcolormesh(x, y, Ex, shading="gouraud", cmap="jet")
     bar = pyplot.colorbar(color_map, ax=pyplot.gca())
     pyplot.xlim(0, Lx - dx)
@@ -46,11 +47,12 @@ def main(jsonfile, step):
     pyplot.ylabel("$y$", fontsize=25)
     bar.set_label("$E_x$", fontsize=25)
     pyplot.gca().set_aspect("equal")
-    pyplot.savefig("{}/Efield/Ex_step_{}_.pdf".format(output, step))
+    pyplot.savefig("{}/Efield/step_{}_Ex_.pdf".format(output, step))
     pyplot.close()
 
     # y-component
     pyplot.figure()
+    pyplot.title("Step {}".format(step), fontsize=25)
     color_map = pyplot.pcolormesh(x, y, Ey, shading="gouraud", cmap="jet")
     bar = pyplot.colorbar(color_map, ax=pyplot.gca())
     pyplot.xlim(0, Lx - dx)
@@ -59,11 +61,12 @@ def main(jsonfile, step):
     pyplot.ylabel("$y$", fontsize=25)
     bar.set_label("$E_y$", fontsize=25)
     pyplot.gca().set_aspect("equal")
-    pyplot.savefig("{}/Efield/Ey_step_{}_.pdf".format(output, step))
+    pyplot.savefig("{}/Efield/step_{}_Ey_.pdf".format(output, step))
     pyplot.close()
 
     # E total
     pyplot.figure()
+    pyplot.title("Step {}".format(step), fontsize=25)
     color_map = pyplot.pcolormesh(x, y, Etotal, shading="gouraud", cmap="jet")
     bar = pyplot.colorbar(color_map, ax=pyplot.gca())
     pyplot.xlim(0, Lx - dx)
@@ -72,7 +75,7 @@ def main(jsonfile, step):
     pyplot.ylabel("$y$", fontsize=25)
     bar.set_label(r"$\left|\vec{E}\right|$", fontsize=25)
     pyplot.gca().set_aspect("equal")
-    pyplot.savefig("{}/Efield/Etotal_step_{}_.pdf".format(output, step))
+    pyplot.savefig("{}/Efield/step_{}_Etotal_.pdf".format(output, step))
     pyplot.close()
 
 
