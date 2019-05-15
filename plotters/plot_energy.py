@@ -17,11 +17,11 @@ def main(jsonfile):
     total = KE + FE
 
     pyplot.figure()
-    pyplot.plot(step, KE, label="Kinetic")
-    pyplot.plot(step, FE, label="Field")
-    pyplot.plot(step, total, label="Total")
-    pyplot.xlabel("Steps")
-    pyplot.ylabel("Energy")
+    pyplot.plot(step, KE, linewidth=0.7, label="Kinetic")
+    pyplot.plot(step, FE, linewidth=0.7, label="Field")
+    pyplot.plot(step, total, linewidth=0.7, label="Total")
+    pyplot.xlabel("Steps", fontsize=13)
+    pyplot.ylabel("Energy", fontsize=13)
     pyplot.grid(ls="--")
     pyplot.legend(loc=0)
     pyplot.savefig("{}/energy/energy.pdf".format(output))
