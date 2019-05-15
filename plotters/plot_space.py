@@ -59,12 +59,9 @@ def main(jsonfile, step):
     if Lx == Ly:
         pyplot.gca().set_aspect("equal")
     pyplot.grid()
-
-    if "space" in root["results"]:
-        pyplot.savefig("{}/space/step_{}_.pdf".format(output, step))
-    else:
+    if not "space" in root["results"]:
         os.system("mkdir -p {}/space".format(output))
-        pyplot.savefig("{}/space/step_{}_.pdf".format(output, step))
+    pyplot.savefig("{}/space/step_{}_.pdf".format(output, step))
 
 
 if __name__ == "__main__":
