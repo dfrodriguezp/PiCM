@@ -38,15 +38,18 @@ Let's perform a simulation of a two-stream instability. For this, there is a scr
 python3 build_two_stream.py
 ```
 This will create a folder with the name specified in the `output` variable. Inside that folder you can find both the sample and the `.json` file. The sample file is called `two_stream.dat` and the JSON file `sim_two_stream.json`.
+
 3. Run the simulation
 ```bash
 python3 main.py electrostatic/sim_two_stream.json
 ```
+
 4. Plot the energy
 ```bash
 python3 plotters/plot_energy.py electrostatic/sim_two_stream.json
 ```
-Plot the phase space in the *x*-dimension in the step 200
+
+5. Plot the phase space in the step 200
 ```bash
 python3 plotters/plot_phase_space.py electrostatic/sim_two_stream.json 200
 ```
