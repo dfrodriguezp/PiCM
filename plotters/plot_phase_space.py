@@ -37,7 +37,7 @@ def main(jsonfile, step):
         print("ERROR! You want to plot a snapshot that doesn't exist.")
         return
 
-    if len(vx) > 1e5:
+    if len(vx) > 1e5 or numpy.allclose(len(vx), 1e5, atol=500):
         colorsx = colorsx[::100]
         colorsy = colorsy[::100]
         x = x[::100]
@@ -45,11 +45,19 @@ def main(jsonfile, step):
         vx = vx[::100]
         vy = vy[::100]
 
+    elif (1e5 > len(vx) > 0.5e5) or numpy.allclose(len(vx), 0.5e5, atol=500):
+        colorsx = colorsx[::50]
+        colorsy = colorsy[::50]
+        x = x[::50]
+        y = y[::50]
+        vx = vx[::50]
+        vy = vy[::50]
+
     Lx, Ly = root["sys_length"]
     # x - dimension
     pyplot.figure()
     pyplot.title("Step {}".format(step))
-    pyplot.scatter(x, vx, c=colorsx)
+    pyplot.scatter(x, vx, c=colorsx, edgecolor="none", alpha=0.9)
     pyplot.xlabel("$x$", fontsize=25)
     pyplot.ylabel("$v_x$", fontsize=25)
     pyplot.xlim(0, Lx)
@@ -59,7 +67,7 @@ def main(jsonfile, step):
     # y - dimension
     pyplot.figure()
     pyplot.title("Step {}".format(step))
-    pyplot.scatter(y, vy, c=colorsy)
+    pyplot.scatter(y, vy, c=colorsy, edgecolor="none", alpha=0.9)
     pyplot.xlabel("$y$", fontsize=25)
     pyplot.ylabel("$v_y$", fontsize=25)
     pyplot.xlim(0, Ly)
