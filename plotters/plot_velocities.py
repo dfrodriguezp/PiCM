@@ -39,6 +39,7 @@ def main(jsonfile, step):
         os.system("mkdir -p {}/velocities".format(output))
 
     vtotal = numpy.linalg.norm([vx, vy, vz], axis=0)
+    
     # x-component
     pyplot.figure()
     pyplot.title("Step {}".format(step), fontsize=25)
@@ -46,6 +47,7 @@ def main(jsonfile, step):
     pyplot.xlabel("$v_x$", fontsize=25)
     pyplot.grid()
     pyplot.savefig("{}/velocities/step_{}_vx_.pdf".format(output, step))
+    pyplot.close()
 
     # y-component
     pyplot.figure()
@@ -54,6 +56,7 @@ def main(jsonfile, step):
     pyplot.xlabel("$v_y$", fontsize=25)
     pyplot.grid()
     pyplot.savefig("{}/velocities/step_{}_vy_.pdf".format(output, step))
+    pyplot.close()
 
     # z-component
     pyplot.figure()
@@ -62,6 +65,7 @@ def main(jsonfile, step):
     pyplot.xlabel("$v_z$", fontsize=25)
     pyplot.grid()
     pyplot.savefig("{}/velocities/step_{}_vz_.pdf".format(output, step))
+    pyplot.close()
 
     # v total
     pyplot.figure()
@@ -70,7 +74,7 @@ def main(jsonfile, step):
     pyplot.xlabel(r"$\left|\vec{v}\right|$", fontsize=25)
     pyplot.grid()
     pyplot.savefig("{}/velocities/step_{}_vtotal_.pdf".format(output, step))
-
+    pyplot.close()
 
 if __name__ == "__main__":
     main()

@@ -62,7 +62,7 @@ def main(jsonfile, step):
     if not "space" in root["results"]:
         os.system("mkdir -p {}/space".format(output))
     pyplot.savefig("{}/space/step_{}_.pdf".format(output, step))
-
+    pyplot.close()
 
 if __name__ == "__main__":
     main()

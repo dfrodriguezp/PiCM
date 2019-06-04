@@ -54,6 +54,7 @@ def main(jsonfile, step):
         vy = vy[::50]
 
     Lx, Ly = root["sys_length"]
+    
     # x - dimension
     pyplot.figure()
     pyplot.title("Step {}".format(step))
@@ -63,6 +64,7 @@ def main(jsonfile, step):
     pyplot.xlim(0, Lx)
     pyplot.grid()
     pyplot.savefig("{}/phase_space/step_{}_x_.pdf".format(output, step))
+    pyplot.close()
 
     # y - dimension
     pyplot.figure()
@@ -73,7 +75,7 @@ def main(jsonfile, step):
     pyplot.xlim(0, Ly)
     pyplot.grid()
     pyplot.savefig("{}/phase_space/step_{}_y_.pdf".format(output, step))
-
+    pyplot.close()
 
 if __name__ == "__main__":
     main()
