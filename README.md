@@ -9,17 +9,18 @@ You need **Python3** with the following modules:
 - NumPy
 - tqdm
 - click
+- Matplotlib
 
 These can be installed via
 
 ```bash
-pip install numpy tqdm click
+pip install numpy tqdm click matplotlib
 ```
 
 or
 
 ```bash
-conda install numpy tqdm click
+conda install numpy tqdm click matplotlib
 ```
 
 ## Running the program
@@ -60,12 +61,10 @@ python3 plotters/plot_energy.py electrostatic/sim_two_stream.json
 
 ![Energy](example_imgs/energy.png)
 
-5. Plot the phase space in the step 200
+5. Plot the phase space in the step 150
 
 ```bash
-python3 plotters/plot_phase_space.py electrostatic/sim_two_stream.json 200
+python3 plotters/plot_phase_space.py electrostatic/sim_two_stream.json 150
 ```
 
-![Phase_space](example_imgs/step_200_x_.png)
-
-### More documentation will be added eventually
+![Phase_space](example_imgs/step_150_x_.png)
