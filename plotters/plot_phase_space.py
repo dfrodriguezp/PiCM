@@ -54,28 +54,33 @@ def main(jsonfile, step):
         vy = vy[::50]
 
     Lx, Ly = root["sys_length"]
-    
+    t = root["dt"] * step
+
     # x - dimension
     pyplot.figure()
-    pyplot.title("Step {}".format(step))
+    pyplot.title(r"$\omega_{\rm{pe}}$" + f"$t = {t}$", fontsize=25)
     pyplot.scatter(x, vx, c=colorsx, edgecolor="none", alpha=0.9)
-    pyplot.xlabel("$x$", fontsize=25)
-    pyplot.ylabel("$v_x$", fontsize=25)
+    pyplot.xlabel(r"$x / \lambda_D$", fontsize=25)
+    pyplot.ylabel(r"$v_x / v_{\rm{th}}$", fontsize=25)
     pyplot.xlim(0, Lx)
     pyplot.grid()
-    pyplot.savefig("{}/phase_space/step_{}_x_.pdf".format(output, step))
+    pyplot.tight_layout()
+    # pyplot.savefig("{}/phase_space/step_{}_x_.pdf".format(output, step))
+    pyplot.savefig("{}/phase_space/step_{}_x_.png".format(output, step))
     pyplot.close()
 
     # y - dimension
     pyplot.figure()
-    pyplot.title("Step {}".format(step))
+    pyplot.title(r"$\omega_{\rm{pe}}$" + f"$t = {t}$", fontsize=25)
     pyplot.scatter(y, vy, c=colorsy, edgecolor="none", alpha=0.9)
-    pyplot.xlabel("$y$", fontsize=25)
-    pyplot.ylabel("$v_y$", fontsize=25)
+    pyplot.xlabel(r"$y / \lambda_D$", fontsize=25)
+    pyplot.ylabel(r"$v_y \ v_{\rm{th}}$", fontsize=25)
     pyplot.xlim(0, Ly)
     pyplot.grid()
+    pyplot.tight_layout()
     pyplot.savefig("{}/phase_space/step_{}_y_.pdf".format(output, step))
     pyplot.close()
+
 
 if __name__ == "__main__":
     main()

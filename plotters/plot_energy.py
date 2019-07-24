@@ -2,6 +2,8 @@ import numpy
 import json
 import click
 from matplotlib import pyplot
+from matplotlib import style
+style.use("classic")
 
 
 @click.command()
@@ -11,19 +13,22 @@ def main(jsonfile):
         root = json.load(json_input)
 
     output = root["output"]
+    dt = root["dt"]
     step, KE, FE = numpy.loadtxt(
         "{}/energy/energy.dat".format(output), unpack=True)
 
     total = KE + FE
+    t = step * dt
 
     pyplot.figure()
-    pyplot.plot(step, KE, linewidth=0.7, label="Kinetic")
-    pyplot.plot(step, FE, linewidth=0.7, label="Field")
-    pyplot.plot(step, total, linewidth=0.7, label="Total")
-    pyplot.xlabel("Steps", fontsize=13)
-    pyplot.ylabel("Energy", fontsize=13)
-    pyplot.grid(ls="--")
-    pyplot.legend(loc=0)
+    pyplot.plot(t, KE, label="Kinetic")
+    pyplot.plot(t, FE, label="Field")
+    pyplot.plot(t, total, label="Total")
+    pyplot.xlabel(r"$\omega_{\rm{pe}}t$", fontsize=25)
+    pyplot.ylabel(r"$E / (n_0 T_e / \varepsilon_0)$", fontsize=25)
+    pyplot.grid()
+    pyplot.legend(loc="best")
+    pyplot.tight_layout()
     pyplot.savefig("{}/energy/energy.pdf".format(output))
     pyplot.close()
 

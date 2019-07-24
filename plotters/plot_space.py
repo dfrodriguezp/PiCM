@@ -48,12 +48,13 @@ def main(jsonfile, step):
         colors = colors[::100]
 
     Lx, Ly = root["sys_length"]
+    t = root["dt"] * step
 
     pyplot.figure()
-    pyplot.title("Step {}".format(step), fontsize=25)
+    pyplot.title(r"$\omega_{\rm{pe}}$" + f"$t = {t}$", fontsize=25)
     pyplot.scatter(x, y, c=colors)
-    pyplot.xlabel("$x$", fontsize=25)
-    pyplot.ylabel("$y$", fontsize=25)
+    pyplot.xlabel(r"$x / \lambda_D$", fontsize=25)
+    pyplot.ylabel(r"$y / \lambda_D$", fontsize=25)
     pyplot.xlim(0, Lx)
     pyplot.ylim(0, Ly)
     if Lx == Ly:
@@ -63,6 +64,7 @@ def main(jsonfile, step):
         os.system("mkdir -p {}/space".format(output))
     pyplot.savefig("{}/space/step_{}_.pdf".format(output, step))
     pyplot.close()
+
 
 if __name__ == "__main__":
     main()

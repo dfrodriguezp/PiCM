@@ -33,14 +33,17 @@ def main(jsonfile, step):
     y = y.reshape((Nx, Ny))
     rho = rho.reshape((Nx, Ny))
 
+    t = root["dt"] * step
+
     pyplot.figure()
+    pyplot.title(r"$\omega_{\rm{pe}}$" + f"$t = {t}$", fontsize=25)
     color_map = pyplot.pcolormesh(x, y, rho, shading="gouraud", cmap="jet")
     bar = pyplot.colorbar(color_map, ax=pyplot.gca())
     pyplot.xlim(0, Lx - dx)
     pyplot.ylim(0, Ly - dy)
-    pyplot.xlabel("$x$", fontsize=25)
-    pyplot.ylabel("$y$", fontsize=25)
-    bar.set_label("$\rho_s$", fontsize=25)
+    pyplot.xlabel(r"$x / \lambda_D$", fontsize=25)
+    pyplot.ylabel(r"$y / \lambda_D$", fontsize=25)
+    bar.set_label(r"$\rho / (e\lambda_D^{-2})$", fontsize=25)
     pyplot.gca().set_aspect("equal")
     pyplot.savefig("{}/rho/step_{}_.pdf".format(output, step))
     pyplot.close()
