@@ -33,7 +33,8 @@ if not(os.path.isdir(output)):
 path_to_sample = f"{output}/{sample_name}"
 output_sample = open(path_to_sample, "w")
 for i in range(len(positions)):
-    output_sample.write("{:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {}\n".format(positions[i][0], positions[i][1], velocities[i], 0.0, 0.0, QoverM[i], int(moves[i])))
+    output_sample.write("{:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {:.8f} {}\n".format(
+        positions[i][0], positions[i][1], velocities[i], 0.0, 0.0, QoverM[i], int(moves[i])))
 output_sample.close()
 
 print("Sample built!\n")
