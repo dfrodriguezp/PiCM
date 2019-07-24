@@ -1,18 +1,5 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
-electrostatic/
-electrostatic2/
+
 # input
 *.json
 *.dat
-
-example/
-
-profiler.py
-
-# results
-results
-results/*
-plots/
-particles_ring/
-test/
