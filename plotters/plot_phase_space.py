@@ -65,8 +65,7 @@ def main(jsonfile, step):
     pyplot.xlim(0, Lx)
     pyplot.grid()
     pyplot.tight_layout()
-    # pyplot.savefig("{}/phase_space/step_{}_x_.pdf".format(output, step))
-    pyplot.savefig("{}/phase_space/step_{}_x_.png".format(output, step))
+    pyplot.savefig("{}/phase_space/step_{}_x_.pdf".format(output, step))
     pyplot.close()
 
     # y - dimension

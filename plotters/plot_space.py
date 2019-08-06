@@ -22,10 +22,10 @@ def main(jsonfile, step):
     output = root["output"]
 
     # Initial data for colors
-    charge = numpy.loadtxt(root["sample"], usecols=(5,))
+    sign = numpy.loadtxt(root["sample"], usecols=(5,))
 
-    colors = numpy.full(len(charge), "r")
-    colors[charge < 0] = "b"
+    colors = numpy.full(len(sign), "r")
+    colors[sign < 0] = "b"
 
     if "phase_space" in root["results"]:
         try:
@@ -42,10 +42,15 @@ def main(jsonfile, step):
             print("ERROR! You want to plot a snapshot that doesn't exist.")
             return
 
-    if len(x) > 1e5:
+    if len(x) > 1e5 or numpy.allclose(len(x), 1e5, atol=500):
+        colors = colors[::100]
         x = x[::100]
         y = y[::100]
-        colors = colors[::100]
+
+    elif (1e5 > len(x) > 0.5e5) or numpy.allclose(len(x), 0.5e5, atol=500):
+        colors = colors[::50]
+        x = x[::50]
+        y = y[::50]
 
     Lx, Ly = root["sys_length"]
     t = root["dt"] * step
