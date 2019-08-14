@@ -25,7 +25,7 @@ or
 $ conda install numpy tqdm click matplotlib
 ```
 
-<u>**Note: unfortunately, the current version of the program is only suitable for linux-based systems.**</u>
+<u>**Note: unfortunately, the current version of the program is only suitable for unix-based systems.**</u>
 
 ## Running the program
 
