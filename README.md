@@ -2,7 +2,7 @@
 
 Software for simulation of the dynamics of charged particles with periodic boundary conditions.
 
-#### If you want the program to run much faster, I encourage you to use the [C++ version](https://github.com/dfrodriguezp/PiCM_cpp)
+#### If you want the program to run much faster, I encourage you to use the [C++ version](https://github.com/dfrodriguezp/PiCM_cpp).
 
 ## Requirements
 
