@@ -138,7 +138,8 @@ def main(jsonfile):
 
     # Create folders to store output
     for f in folders:
-        os.system("mkdir -p {}".format(outputName + f))
+        if not os.path.exists(outputName + f):
+            os.makedirs(outputName + f)
 
     # Auxiliary vectors for Boris algorithm v1 and v2
 
